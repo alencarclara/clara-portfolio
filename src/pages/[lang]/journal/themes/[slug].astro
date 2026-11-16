@@ -1,0 +1,35 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import JournalTabs from "../../../../components/JournalTabs.astro";
+import { getUi } from "../../../../lib/ui";
+import { LANGS, localePath, type Lang } from "../../../../lib/i18n";
+import { getJournal, getThemeInfo, spellingsOf } from "../../../../lib/journal-data";
+import { entriesByTheme, longDate } from "../../../../lib/journal";
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of LANGS) {
+    for (const t of entriesByTheme(await getJournal(lang))) paths.push({ params: { lang, slug: t.slug } });
+  }
+  return paths;
+}
+const { lang, slug } = Astro.params as { lang: Lang; slug: string };
+const ui = await getUi(lang);
+const base = import.meta.env.BASE_URL;
+const theme = entriesByTheme(await getJournal(lang)).find((t) => t.slug === slug)!;
+const info = await getThemeInfo(lang, slug, spellingsOf(theme.entries, slug));
+---
+<Base title={`${info.title} · ${ui.pages.journal.title}`} current="journal" lang={lang} path={`journal/themes/${slug}`}>
+  <h1>{info.title}</h1>
+  <JournalTabs ui={ui} lang={lang} current="themes" />
+  {info.summary && <p class="prose">{info.summary}</p>}
+  <ul id="theme-entries" class="page-list">
+    {theme.entries.map((e) => (
+      <li>
+        <a href={localePath(lang, `journal/day/${e.data.date}`, base)}>{longDate(e.data.date, ui.journal.monthNames, lang)}</a>
+        <span class="muted"> · <span lang={e.untranslated ? e.data.lang : undefined}>{e.data.title}</span></span>
+        {e.untranslated && <span class="muted"> ({ui.journal.untranslated})</span>}
+      </li>
+    ))}
+  </ul>
+</Base>

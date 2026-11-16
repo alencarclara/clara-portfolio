@@ -120,3 +120,20 @@ export const publishedOf = (collection: string, lang?: Lang) =>
 export function isoDate(v: unknown): string {
   return v instanceof Date ? v.toISOString().slice(0, 10) : String(v);
 }
+
+// ---- journal ----
+export const journalPublished = () => publishedOf("journal");
+export const entryName = (e: Entry) => path.basename(e.rel);
+
+/** Uma entrada por par (nome de arquivo): a do idioma, ou a original com untranslated. Ordenado por data e nome. */
+export function journalResolved(lang: Lang) {
+  const groups = new Map<string, Entry[]>();
+  for (const e of journalPublished()) groups.set(entryName(e), [...(groups.get(entryName(e)) ?? []), e]);
+  return [...groups.entries()]
+    .map(([name, list]) => {
+      const own = list.find((e) => e.data.lang === lang);
+      const entry = own ?? [...list].sort((a, b) => a.rel.localeCompare(b.rel))[0];
+      return { name, entry, date: isoDate(entry.data.date), untranslated: !own };
+    })
+    .sort((a, b) => (a.date + a.name).localeCompare(b.date + b.name));
+}

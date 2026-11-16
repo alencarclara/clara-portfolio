@@ -1,5 +1,8 @@
 {
-  "site": { "name": "Clara Alencar", "skip": "Skip to content" },
+  "site": {
+    "name": "Clara Alencar",
+    "skip": "Skip to content"
+  },
   "nav": {
     "label": "Main",
     "home": "Home",
@@ -9,9 +12,60 @@
     "projects": "Projects",
     "journal": "Journal"
   },
-  "theme": { "toLight": "[ light ]", "toDark": "[ dark ]", "label": "Toggle theme" },
-  "langSwitch": { "label": "PT: switch to Portuguese", "text": "[ PT ]", "name": "English" },
-  "home": { "whoami": "$ whoami", "pages": "$ ls pages/", "contact": "LinkedIn" },
+  "theme": {
+    "toLight": "[ light ]",
+    "toDark": "[ dark ]",
+    "label": "Toggle theme"
+  },
+  "langSwitch": {
+    "label": "PT: switch to Portuguese",
+    "text": "[ PT ]",
+    "name": "English"
+  },
+  "journal": {
+    "tabsLabel": "Journal sections",
+    "calendar": "Calendar",
+    "themes": "Themes",
+    "weekdays": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
+    "monthNames": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "entriesOne": "{n} entry",
+    "entriesMany": "{n} entries",
+    "untranslated": "not translated yet",
+    "did": "What I did",
+    "learned": "What I learned",
+    "tags": "Themes",
+    "links": "Links",
+    "empty": "No entries yet.",
+    "prevMonth": "previous month",
+    "nextMonth": "next month",
+    "backToCalendar": "Back to the calendar"
+  },
+  "home": {
+    "whoami": "$ whoami",
+    "pages": "$ ls pages/",
+    "contact": "LinkedIn"
+  },
   "pages": {
     "activities": {
       "title": "Extracurricular Activities",
@@ -32,8 +86,7 @@
     },
     "journal": {
       "title": "Journal",
-      "intro": "The public diary of what I do and learn.",
-      "soon": "Coming soon: a calendar of achievements and summaries by theme."
+      "intro": "The public diary of what I do and learn."
     }
   },
   "labels": {
@@ -47,6 +100,23 @@
     "role": "Role",
     "visit": "Visit"
   },
-  "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-  "footer": { "branch": "main", "lang": "en", "built": "built with Astro" }
+  "months": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ],
+  "footer": {
+    "branch": "main",
+    "lang": "en",
+    "built": "built with Astro"
+  }
 }

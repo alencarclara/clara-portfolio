@@ -75,7 +75,16 @@ Decisões da slice 3 (detalhes em `docs/slice-3.md`):
 - `ui` tem um arquivo por idioma (`pt.json`, `en.json`) com as mesmas chaves; chave obrigatória `langSwitch: { label, text, name }`. `getUi(lang)` lê o arquivo do idioma.
 - Botão de idioma `#lang-switch` no cabeçalho leva à mesma página no outro idioma; o `<head>` tem `<link rel="alternate" hreflang>`. Todo link interno fica no mesmo idioma e passa por `localePath` (respeita `BASE_URL`).
 - Data curta dos cursos: `dd/mm` em PT e `mm/dd` em EN.
-- O aviso "ainda sem tradução" do Journal fica para a slice 4 (ainda não há páginas de entrada).
+
+Decisões da slice 4 (detalhes em `docs/slice-4.md`):
+
+- Rotas do Journal, por idioma: `/<lang>/journal` (mês mais recente com entrada), `/<lang>/journal/month/AAAA-MM`, `/<lang>/journal/day/AAAA-MM-DD`, `/<lang>/journal/themes` e `/<lang>/journal/themes/<slug>`. Só existem páginas para meses, dias e temas com entrada publicada em algum idioma.
+- Sem JavaScript: calendário é tabela gerada no build, semana começa no domingo; abas Calendário e Temas são links.
+- Tema = tag, com slug em kebab-case sem acento (`Machine Learning` vira `machine-learning`); `tags` iguais nos dois idiomas de um par. O título do tema vem da coleção `themes`, se existir.
+- Entrada sem tradução aparece no outro idioma com o aviso "ainda sem tradução", sem 404 (fecha o item adiado da slice 3).
+- Tags em inglês nos dois idiomas (ex.: `Planning`, `Languages`, `Testing`), para o tema ter o mesmo nome em `/pt` e `/en`.
+- Toda tag precisa gerar slug de tema não vazio (ao menos uma letra ou número ASCII depois de tirar acentos); o schema recusa tags como `++` ou `日本語`.
+- RSS fica para a slice de deploy.
 
 Regras:
 

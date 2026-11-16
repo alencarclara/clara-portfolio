@@ -1,0 +1,29 @@
+---
+import Base from "../../../layouts/Base.astro";
+import JournalTabs from "../../../components/JournalTabs.astro";
+import Calendar from "../../../components/Calendar.astro";
+import { getUi } from "../../../lib/ui";
+import { LANGS, type Lang } from "../../../lib/i18n";
+import { getJournal } from "../../../lib/journal-data";
+import { monthsWithEntries } from "../../../lib/journal";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+const lang = Astro.params.lang as Lang;
+const ui = await getUi(lang);
+const page = ui.pages.journal;
+const entries = await getJournal(lang);
+const months = monthsWithEntries(entries);
+const latest = months[months.length - 1];
+const counts: Record<string, number> = {};
+for (const e of entries) counts[e.data.date] = (counts[e.data.date] ?? 0) + 1;
+---
+<Base title={page.title} current="journal" lang={lang}>
+  <h1>{page.title}</h1>
+  <p class="muted prose">{page.intro}</p>
+  <JournalTabs ui={ui} lang={lang} current="calendar" />
+  {latest
+    ? <Calendar ui={ui} lang={lang} month={latest} counts={counts} prev={months[months.length - 2]} />
+    : <p>{ui.journal.empty}</p>}
+</Base>

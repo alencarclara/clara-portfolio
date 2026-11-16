@@ -25,6 +25,11 @@ describe("i18n > helper de rotas (src/lib/i18n.ts)", () => {
     expect(localePath("en", "courses")).toBe("/en/courses");
   });
 
+  it("localePath aceita subcaminhos do Journal", () => {
+    expect(localePath("en", "journal/day/2026-11-15")).toBe("/en/journal/day/2026-11-15");
+    expect(localePath("pt", "journal/themes/astro", "/clara-portfolio/")).toBe("/clara-portfolio/pt/journal/themes/astro");
+  });
+
   it("localePath respeita o base do GitHub Pages, com ou sem barra final", () => {
     expect(localePath("pt", undefined, "/clara-portfolio/")).toBe("/clara-portfolio/pt/");
     expect(localePath("en", "journal", "/clara-portfolio/")).toBe("/clara-portfolio/en/journal");
@@ -60,6 +65,27 @@ describe("i18n > textos de interface", () => {
     expect(Object.keys(base.langSwitch ?? {}).sort()).toEqual(["label", "name", "text"]);
     const { langSwitch, ...rest } = base;
     expect(uiSchema.safeParse(rest).success, "langSwitch deve ser obrigatório").toBe(false);
+  });
+
+  it("journal: chave obrigatória no uiSchema, com os textos do Journal", () => {
+    const keys = [
+      "backToCalendar", "calendar", "did", "empty", "entriesMany", "entriesOne", "learned", "links",
+      "monthNames", "nextMonth", "prevMonth", "tabsLabel", "tags", "themes", "untranslated", "weekdays",
+    ];
+    for (const l of LANGS) {
+      const ui = uiOf(l);
+      expect(Object.keys(ui.journal ?? {}).sort(), `${l}.json`).toEqual(keys);
+      expect(ui.journal.weekdays).toHaveLength(7);
+      expect(ui.journal.monthNames).toHaveLength(12);
+      expect(ui.journal.entriesOne).toContain("{n}");
+      expect(ui.journal.entriesMany).toContain("{n}");
+    }
+    const { journal, ...rest } = uiOf("pt");
+    expect(uiSchema.safeParse(rest).success, "journal deve ser obrigatório").toBe(false);
+  });
+
+  it("o placeholder 'soon' do Journal foi removido de pages.journal", () => {
+    for (const l of LANGS) expect(Object.keys(uiOf(l).pages.journal).sort()).toEqual(["intro", "title"]);
   });
 
   it("o botão de cada idioma aponta para o outro: text e name diferem entre pt e en", () => {

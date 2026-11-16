@@ -246,6 +246,12 @@ describe("validação", () => {
     it("journal: translation_of string opcional", () => {
       expect(parse("journal", make("journal", { translation_of: "2026-11-15-spec" })).success).toBe(true);
     });
+    it("journal: toda tag precisa gerar um slug de tema não vazio", () => {
+      expect(parse("journal", make("journal", { tags: ["Machine Learning", "Ação"] })).success).toBe(true);
+      for (const t of ["++", "日本語", "---"]) {
+        expect(parse("journal", make("journal", { tags: ["ok", t] })).success, t).toBe(false);
+      }
+    });
     it("themes: slug precisa ser kebab-case", () => {
       expect(parse("themes", make("themes", { slug: "ok-slug-2" })).success).toBe(true);
       for (const s of ["Not Kebab", "snake_case", "UPPER", "-lead", "trail-", "a--b"]) {
@@ -354,6 +360,43 @@ describe("validação > conteúdo em disco", () => {
         }
       });
     }
+  });
+
+  describe("journal: nome do arquivo e pares de tradução", () => {
+    const journal = findMarkdown(path.join(contentRoot, "journal")).map((f) => ({
+      f,
+      name: path.basename(f),
+      lang: path.basename(path.dirname(f)),
+      data: matter(fs.readFileSync(f, "utf8")).data,
+    }));
+    const iso = (v: unknown) => (v instanceof Date ? v.toISOString().slice(0, 10) : String(v));
+
+    it("nome do arquivo começa com a data: AAAA-MM-DD-slug.md", () => {
+      for (const j of journal) {
+        expect(j.name, j.f).toMatch(/^\d{4}-\d{2}-\d{2}-[a-z0-9]+(-[a-z0-9]+)*\.md$/);
+        expect(j.name.slice(0, 10), `${j.f}: date diferente do nome`).toBe(iso(j.data.date));
+      }
+    });
+
+    it("pares (mesmo nome em pt/ e en/) têm a mesma date, as mesmas tags e os mesmos links", () => {
+      for (const a of journal.filter((x) => x.lang === "pt")) {
+        const b = journal.find((x) => x.lang === "en" && x.name === a.name);
+        if (!b) continue;
+        expect(iso(b.data.date), a.name).toBe(iso(a.data.date));
+        expect(b.data.tags, `${a.name}: tags`).toEqual(a.data.tags);
+        expect(b.data.links ?? [], `${a.name}: links`).toEqual(a.data.links ?? []);
+        expect(Boolean(b.data.draft), `${a.name}: draft`).toBe(Boolean(a.data.draft));
+      }
+    });
+
+    it("translation_of, quando existe, é o nome do par sem extensão e o par existe", () => {
+      for (const j of journal.filter((x) => x.data.translation_of)) {
+        const other = j.lang === "pt" ? "en" : "pt";
+        const target = `${j.data.translation_of}.md`;
+        expect(target, j.f).toBe(j.name);
+        expect(journal.some((x) => x.lang === other && x.name === target), `${j.f}: sem o original em ${other}/`).toBe(true);
+      }
+    });
   });
 
   describe("espelho pt/en: mesmo nome de arquivo, mesmo draft", () => {
