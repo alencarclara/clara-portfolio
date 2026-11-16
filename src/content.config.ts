@@ -8,8 +8,10 @@ import {
   experienceSchema,
   activitiesSchema,
   aboutSchema,
+  uiSchema,
 } from "./lib/schemas";
 
+const data = (name: string) => glob({ pattern: "**/*.json", base: `./src/content/${name}` });
 const md = (name: string) => glob({ pattern: "**/*.md", base: `./src/content/${name}` });
 
 export const collections = {
@@ -20,4 +22,5 @@ export const collections = {
   experience: defineCollection({ loader: md("experience"), schema: experienceSchema }),
   activities: defineCollection({ loader: md("activities"), schema: activitiesSchema }),
   about: defineCollection({ loader: md("about"), schema: aboutSchema }),
+  ui: defineCollection({ loader: data("ui"), schema: uiSchema }),
 };

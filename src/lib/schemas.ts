@@ -89,7 +89,7 @@ export const experienceSchema = z
     org: text,
     role: text,
     start: date,
-    end: date,
+    end: date.optional(),
     summary: text,
     highlights: textList.optional(),
     tools: textList.optional(),
@@ -103,7 +103,7 @@ export const activitiesSchema = z
     org: text,
     role: text,
     start: date,
-    end: date,
+    end: date.optional(),
     summary: text,
     highlights: textList.optional(),
     draft: z.boolean().default(false),
@@ -126,3 +126,41 @@ export const aboutSchema = z
       ctx.addIssue({ code: "custom", path: ["photo_alt"], message: "photo_alt é obrigatório quando há photo" });
     }
   });
+
+// Textos de interface (src/content/ui/<lang>.json). Nenhum componente guarda texto próprio.
+const pageText = z.object({ title: text, intro: text }).strict();
+
+export const uiSchema = z
+  .object({
+    site: z.object({ name: text, skip: text }).strict(),
+    nav: z
+      .object({ label: text, home: text, activities: text, experience: text, courses: text, projects: text, journal: text })
+      .strict(),
+    theme: z.object({ toLight: text, toDark: text, label: text }).strict(),
+    home: z.object({ whoami: text, pages: text, contact: text }).strict(),
+    pages: z
+      .object({
+        activities: pageText,
+        experience: pageText,
+        courses: pageText,
+        projects: pageText.extend({ empty: text }).strict(),
+        journal: pageText.extend({ soon: text }).strict(),
+      })
+      .strict(),
+    labels: z
+      .object({
+        present: text,
+        updated: text,
+        inProgress: text,
+        completed: text,
+        highlights: text,
+        tools: text,
+        stack: text,
+        role: text,
+        visit: text,
+      })
+      .strict(),
+    months: z.array(text).length(12),
+    footer: z.object({ branch: text, lang: text, built: text }).strict(),
+  })
+  .strict();

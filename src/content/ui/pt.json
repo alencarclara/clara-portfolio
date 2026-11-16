@@ -1,0 +1,51 @@
+{
+  "site": { "name": "Clara Alencar", "skip": "Pular para o conteúdo" },
+  "nav": {
+    "label": "Principal",
+    "home": "Início",
+    "activities": "Atividades",
+    "experience": "Estágios e Pesquisa",
+    "courses": "Cursos",
+    "projects": "Projetos",
+    "journal": "Journal"
+  },
+  "theme": { "toLight": "[ light ]", "toDark": "[ dark ]", "label": "Alternar tema" },
+  "home": { "whoami": "$ whoami", "pages": "$ ls páginas/", "contact": "LinkedIn" },
+  "pages": {
+    "activities": {
+      "title": "Atividades Extracurriculares",
+      "intro": "Organizações estudantis que lidero ou de que participo."
+    },
+    "experience": {
+      "title": "Estágios e Pesquisa",
+      "intro": "Estágios e iniciação científica."
+    },
+    "courses": {
+      "title": "Cursos",
+      "intro": "O que estou estudando, com a porcentagem e a data da última atualização."
+    },
+    "projects": {
+      "title": "Projetos",
+      "intro": "Sites e apps que construí.",
+      "empty": "Os projetos aparecem aqui em breve."
+    },
+    "journal": {
+      "title": "Journal",
+      "intro": "O diário público do que faço e aprendo.",
+      "soon": "Em breve: calendário de realizações e resumos por tema."
+    }
+  },
+  "labels": {
+    "present": "atual",
+    "updated": "atualizado em",
+    "inProgress": "Em andamento",
+    "completed": "Concluídos",
+    "highlights": "Destaques",
+    "tools": "Ferramentas",
+    "stack": "Stack",
+    "role": "Papel",
+    "visit": "Visitar"
+  },
+  "months": ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"],
+  "footer": { "branch": "main", "lang": "pt-BR", "built": "feito com Astro" }
+}
