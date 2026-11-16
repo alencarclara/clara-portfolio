@@ -82,6 +82,7 @@ Decisões da slice 4 (detalhes em `docs/slice-4.md`):
 - Sem JavaScript: calendário é tabela gerada no build, semana começa no domingo; abas Calendário e Temas são links.
 - Tema = tag, com slug em kebab-case sem acento (`Machine Learning` vira `machine-learning`); `tags` iguais nos dois idiomas de um par. O título do tema vem da coleção `themes`, se existir.
 - Entrada sem tradução aparece no outro idioma com o aviso "ainda sem tradução", sem 404 (fecha o item adiado da slice 3).
+- Tags em inglês nos dois idiomas (ex.: `Planning`, `Languages`, `Testing`), para o tema ter o mesmo nome em `/pt` e `/en`.
 - Toda tag precisa gerar slug de tema não vazio (ao menos uma letra ou número ASCII depois de tirar acentos); o schema recusa tags como `++` ou `日本語`.
 - RSS fica para a slice de deploy.
 
