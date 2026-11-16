@@ -6,8 +6,21 @@ export const root = path.resolve(__dirname, "..");
 export const dist = path.join(root, "dist");
 export const contentRoot = path.join(root, "src/content");
 
-export const ROUTES = ["/", "/activities", "/experience", "/courses", "/projects", "/journal"] as const;
-export const PAGE_ROUTES = ROUTES.filter((r) => r !== "/");
+export const LANGS = ["pt", "en"] as const;
+export type Lang = (typeof LANGS)[number];
+export const otherLang = (l: Lang): Lang => (l === "pt" ? "en" : "pt");
+export const HTML_LANG: Record<Lang, string> = { pt: "pt-BR", en: "en" };
+export const PAGES = ["activities", "experience", "courses", "projects", "journal"] as const;
+
+/** Rota de uma página: pageRoute("pt") = "/pt", pageRoute("en", "courses") = "/en/courses". */
+export const pageRoute = (lang: Lang, page?: (typeof PAGES)[number]) => (page ? `/${lang}/${page}` : `/${lang}`);
+/** Home e as 5 páginas de um idioma. */
+export const routesFor = (lang: Lang) => [pageRoute(lang), ...PAGES.map((p) => pageRoute(lang, p))];
+export const pageRoutesFor = (lang: Lang) => PAGES.map((p) => pageRoute(lang, p));
+export const ROUTES = LANGS.flatMap(routesFor);
+
+/** Textos de interface de um idioma (src/content/ui/<lang>.json). */
+export const uiOf = (lang: Lang) => JSON.parse(fs.readFileSync(path.join(contentRoot, "ui", `${lang}.json`), "utf8"));
 
 export function walk(dir: string, pattern: RegExp): string[] {
   if (!fs.existsSync(dir)) return [];
@@ -99,8 +112,10 @@ export function contentEntries(): Entry[] {
     return { file, rel, collection: rel.split(path.sep)[0], data: m.data, body: m.content };
   });
 }
-export const publishedOf = (collection: string) =>
-  contentEntries().filter((e) => e.collection === collection && e.data.draft !== true);
+export const publishedOf = (collection: string, lang?: Lang) =>
+  contentEntries().filter(
+    (e) => e.collection === collection && e.data.draft !== true && (lang === undefined || e.data.lang === lang),
+  );
 
 export function isoDate(v: unknown): string {
   return v instanceof Date ? v.toISOString().slice(0, 10) : String(v);
