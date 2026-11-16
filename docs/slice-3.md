@@ -1,6 +1,6 @@
 # Slice 3: idiomas EN/PT (rotas e troca de idioma)
 
-Status: plano, aguardando ok de Clara. Depende do merge do PR #5 (slice 2); a branch sai de `feat/slice-2-paginas` até lá.
+Status: implementada na branch `feat/slice-3-idiomas`; aguarda revisão e PR. Depende do merge do PR #5 (slice 2); a branch sai de `feat/slice-2-paginas` até lá.
 
 ## Decisões (Clara, 2026-11-16)
 

@@ -48,10 +48,10 @@ Cada tipo de conteúdo é um arquivo markdown com campos obrigatórios; se falta
 | --- | --- | --- |
 | Journal (entrada diária) | `date`, `lang` (en/pt), `title`, `did` (o que fiz), `learned` (o que aprendi), `tags` (temas) | `draft`, `links`, `translation_of` |
 | Tema (aba Temas) | `slug`, `lang`, `title` | `summary` escrito à mão; as entradas do tema entram automaticamente pelas tags |
-| Curso | `title`, `provider`, `status` (concluído ou em andamento), `progress` (0 a 100), `updated_at` | `started_at`, `finished_at`, `url`, `certificate_url`, `notes` |
-| Projeto | `title`, `status`, `role`, `stack`, `summary`, `period` | `url`, `screenshot`, `outcome`, `draft` |
-| Experiência (estágio, pesquisa) | `org`, `role`, `start`, `summary` | `end` (ausente = em andamento), `highlights`, `tools`, `draft` |
-| Atividade extracurricular | `org`, `role`, `start`, `summary` | `end` (ausente = em andamento), `highlights` (números), `draft` |
+| Curso | `lang`, `title`, `provider`, `status` (concluído ou em andamento), `progress` (0 a 100), `updated_at` | `started_at`, `finished_at`, `url`, `certificate_url`, `notes` |
+| Projeto | `lang`, `title`, `status`, `role`, `stack`, `summary`, `period` | `url`, `screenshot`, `outcome`, `draft` |
+| Experiência (estágio, pesquisa) | `lang`, `org`, `role`, `start`, `summary` | `end` (ausente = em andamento), `highlights`, `tools`, `draft` |
+| Atividade extracurricular | `lang`, `org`, `role`, `start`, `summary` | `end` (ausente = em andamento), `highlights` (números), `draft` |
 
 Decisões de schema da slice 1 (detalhes em `docs/slice-1.md`):
 
@@ -66,7 +66,16 @@ Decisões de schema da slice 2 (detalhes em `docs/slice-2.md`):
 
 - Experiência e atividade: `end` passa a ser opcional (ausente = em andamento, exibido como "jan 2026 – atual"); quando presente, `end` >= `start`.
 - Nova coleção `ui` (`src/content/ui/pt.json`, `uiSchema` estrito): todos os textos de interface; nenhum componente guarda texto próprio.
-- Rotas provisórias (mudam na slice 3): `/`, `/activities`, `/experience`, `/courses`, `/projects`, `/journal`.
+- Rotas provisórias da slice 2 (substituídas na slice 3): `/`, `/activities`, `/experience`, `/courses`, `/projects`, `/journal`.
+
+Decisões da slice 3 (detalhes em `docs/slice-3.md`):
+
+- Rotas com prefixo de idioma: `/pt/` e `/en/` (home) e `/pt|en/{activities,experience,courses,projects,journal}`. A raiz `/` escolhe o idioma por `navigator.language` (EN se começar com `en`, senão PT); sem JS mostra os dois links, PT primeiro.
+- `lang` (`en` ou `pt`) é obrigatório em cursos, projetos, experiência e atividades; `translation_of` opcional. Um arquivo por idioma em `src/content/<tipo>/pt/` e `src/content/<tipo>/en/`, com o mesmo nome; o `lang` bate com a pasta e o `draft` é igual nos dois. O `about` segue um arquivo por idioma na pasta plana (`about/pt.md`, `about/en.md`).
+- `ui` tem um arquivo por idioma (`pt.json`, `en.json`) com as mesmas chaves; chave obrigatória `langSwitch: { label, text, name }`. `getUi(lang)` lê o arquivo do idioma.
+- Botão de idioma `#lang-switch` no cabeçalho leva à mesma página no outro idioma; o `<head>` tem `<link rel="alternate" hreflang>`. Todo link interno fica no mesmo idioma e passa por `localePath` (respeita `BASE_URL`).
+- Data curta dos cursos: `dd/mm` em PT e `mm/dd` em EN.
+- O aviso "ainda sem tradução" do Journal fica para a slice 4 (ainda não há páginas de entrada).
 
 Regras:
 
