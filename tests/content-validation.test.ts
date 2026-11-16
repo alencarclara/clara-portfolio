@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import type { ZodTypeAny } from "zod";
+import type { ZodTypeAny } from "astro/zod";
 import {
   journalSchema,
   themesSchema,
@@ -269,14 +269,15 @@ describe("validação", () => {
 // ---------------------------------------------------------------------------
 const contentRoot = path.resolve(__dirname, "../src/content");
 
-function findFixtures(dir: string): string[] {
+function findMarkdown(dir: string, pattern = /\.md$/): string[] {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) return findFixtures(p);
-    return e.isFile() && /^fixture-.*\.md$/.test(e.name) ? [p] : [];
+    if (e.isDirectory()) return findMarkdown(p, pattern);
+    return e.isFile() && pattern.test(e.name) ? [p] : [];
   });
 }
+const findFixtures = (dir: string) => findMarkdown(dir, /^fixture-.*\.md$/);
 
 const fixtures = findFixtures(contentRoot);
 const collectionOf = (f: string) => path.relative(contentRoot, f).split(path.sep)[0];
@@ -307,9 +308,10 @@ describe("validação > fixtures em disco", () => {
   describe("lang bate com a pasta", () => {
     for (const lang of ["en", "pt"]) {
       it(`journal/${lang}/ contém só lang: ${lang}`, () => {
+        // Todos os .md da pasta (não só fixtures): vale também para o conteúdo real.
         const dir = path.join(contentRoot, "journal", lang);
-        const found = fixtures.filter((f) => f.startsWith(dir + path.sep));
-        expect(found.length, `nenhuma fixture em journal/${lang}`).toBeGreaterThan(0);
+        const found = findMarkdown(dir);
+        expect(found.length, `nenhum arquivo em journal/${lang}`).toBeGreaterThan(0);
         for (const f of found) {
           expect(matter(fs.readFileSync(f, "utf8")).data.lang, f).toBe(lang);
         }
