@@ -1,0 +1,36 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import JournalTabs from "../../../../components/JournalTabs.astro";
+import { getUi } from "../../../../lib/ui";
+import { LANGS, localePath, type Lang } from "../../../../lib/i18n";
+import { getJournal, getThemeInfo, spellingsOf, countText } from "../../../../lib/journal-data";
+import { entriesByTheme } from "../../../../lib/journal";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+const lang = Astro.params.lang as Lang;
+const ui = await getUi(lang);
+const page = ui.pages.journal;
+const base = import.meta.env.BASE_URL;
+const themes = await Promise.all(
+  entriesByTheme(await getJournal(lang)).map(async (t) => ({
+    ...t,
+    info: await getThemeInfo(lang, t.slug, spellingsOf(t.entries, t.slug)),
+  })),
+);
+---
+<Base title={`${ui.journal.themes} · ${page.title}`} current="journal" lang={lang} path="journal/themes">
+  <h1>{page.title}</h1>
+  <p class="muted prose">{page.intro}</p>
+  <JournalTabs ui={ui} lang={lang} current="themes" />
+  {themes.length === 0 && <p>{ui.journal.empty}</p>}
+  <ul id="themes" class="page-list">
+    {themes.map((t) => (
+      <li>
+        <a href={localePath(lang, `journal/themes/${t.slug}`, base)}>{t.info.title}</a>
+        <span class="muted"> · {countText(ui, t.entries.length)}</span>
+      </li>
+    ))}
+  </ul>
+</Base>

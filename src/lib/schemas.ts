@@ -146,6 +146,26 @@ export const uiSchema = z
       .strict(),
     theme: z.object({ toLight: text, toDark: text, label: text }).strict(),
     langSwitch: z.object({ label: text, text, name: text }).strict(),
+    journal: z
+      .object({
+        tabsLabel: text,
+        calendar: text,
+        themes: text,
+        weekdays: z.array(text).length(7),
+        monthNames: z.array(text).length(12),
+        entriesOne: text,
+        entriesMany: text,
+        untranslated: text,
+        did: text,
+        learned: text,
+        tags: text,
+        links: text,
+        empty: text,
+        prevMonth: text,
+        nextMonth: text,
+        backToCalendar: text,
+      })
+      .strict(),
     home: z.object({ whoami: text, pages: text, contact: text }).strict(),
     pages: z
       .object({
@@ -153,7 +173,7 @@ export const uiSchema = z
         experience: pageText,
         courses: pageText,
         projects: pageText.extend({ empty: text }).strict(),
-        journal: pageText.extend({ soon: text }).strict(),
+        journal: pageText,
       })
       .strict(),
     labels: z

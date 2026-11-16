@@ -1,5 +1,8 @@
 {
-  "site": { "name": "Clara Alencar", "skip": "Pular para o conteúdo" },
+  "site": {
+    "name": "Clara Alencar",
+    "skip": "Pular para o conteúdo"
+  },
   "nav": {
     "label": "Principal",
     "home": "Início",
@@ -9,9 +12,60 @@
     "projects": "Projetos",
     "journal": "Journal"
   },
-  "theme": { "toLight": "[ light ]", "toDark": "[ dark ]", "label": "Alternar tema" },
-  "langSwitch": { "label": "EN: mudar para inglês", "text": "[ EN ]", "name": "Português" },
-  "home": { "whoami": "$ whoami", "pages": "$ ls páginas/", "contact": "LinkedIn" },
+  "theme": {
+    "toLight": "[ light ]",
+    "toDark": "[ dark ]",
+    "label": "Alternar tema"
+  },
+  "langSwitch": {
+    "label": "EN: mudar para inglês",
+    "text": "[ EN ]",
+    "name": "Português"
+  },
+  "journal": {
+    "tabsLabel": "Seções do Journal",
+    "calendar": "Calendário",
+    "themes": "Temas",
+    "weekdays": [
+      "dom",
+      "seg",
+      "ter",
+      "qua",
+      "qui",
+      "sex",
+      "sáb"
+    ],
+    "monthNames": [
+      "janeiro",
+      "fevereiro",
+      "março",
+      "abril",
+      "maio",
+      "junho",
+      "julho",
+      "agosto",
+      "setembro",
+      "outubro",
+      "novembro",
+      "dezembro"
+    ],
+    "entriesOne": "{n} entrada",
+    "entriesMany": "{n} entradas",
+    "untranslated": "ainda sem tradução",
+    "did": "O que fiz",
+    "learned": "O que aprendi",
+    "tags": "Temas",
+    "links": "Links",
+    "empty": "Ainda não há entradas.",
+    "prevMonth": "mês anterior",
+    "nextMonth": "próximo mês",
+    "backToCalendar": "Voltar ao calendário"
+  },
+  "home": {
+    "whoami": "$ whoami",
+    "pages": "$ ls páginas/",
+    "contact": "LinkedIn"
+  },
   "pages": {
     "activities": {
       "title": "Atividades Extracurriculares",
@@ -32,8 +86,7 @@
     },
     "journal": {
       "title": "Journal",
-      "intro": "O diário público do que faço e aprendo.",
-      "soon": "Em breve: calendário de realizações e resumos por tema."
+      "intro": "O diário público do que faço e aprendo."
     }
   },
   "labels": {
@@ -47,6 +100,23 @@
     "role": "Papel",
     "visit": "Visitar"
   },
-  "months": ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"],
-  "footer": { "branch": "main", "lang": "pt-BR", "built": "feito com Astro" }
+  "months": [
+    "jan",
+    "fev",
+    "mar",
+    "abr",
+    "mai",
+    "jun",
+    "jul",
+    "ago",
+    "set",
+    "out",
+    "nov",
+    "dez"
+  ],
+  "footer": {
+    "branch": "main",
+    "lang": "pt-BR",
+    "built": "feito com Astro"
+  }
 }

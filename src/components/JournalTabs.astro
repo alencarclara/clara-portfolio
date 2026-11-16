@@ -1,0 +1,17 @@
+---
+import { localePath, type Lang } from "../lib/i18n";
+import type { getUi } from "../lib/ui";
+type Ui = Awaited<ReturnType<typeof getUi>>;
+interface Props { ui: Ui; lang: Lang; current: "calendar" | "themes" }
+const { ui, lang, current } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const tabs = [
+  ["calendar", localePath(lang, "journal", base), ui.journal.calendar],
+  ["themes", localePath(lang, "journal/themes", base), ui.journal.themes],
+] as const;
+---
+<nav class="tabs" aria-label={ui.journal.tabsLabel}>
+  <ul>
+    {tabs.map(([key, href, label]) => <li><a href={href} aria-current={current === key ? "page" : undefined}>{label}</a></li>)}
+  </ul>
+</nav>

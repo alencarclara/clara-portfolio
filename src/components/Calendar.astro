@@ -1,0 +1,48 @@
+---
+import { monthGrid, dayMonthName } from "../lib/journal";
+import { countText } from "../lib/journal-data";
+import { localePath, type Lang } from "../lib/i18n";
+import type { getUi } from "../lib/ui";
+type Ui = Awaited<ReturnType<typeof getUi>>;
+// counts: dia (AAAA-MM-DD) -> número de entradas; só os dias com entrada viram link.
+interface Props { ui: Ui; lang: Lang; month: string; counts: Record<string, number>; prev?: string; next?: string }
+const { ui, lang, month, counts, prev, next } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const [year, mo] = month.split("-").map(Number);
+const grid = monthGrid(year, mo);
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+<p class="cal-nav">
+  {prev && <a rel="prev" href={localePath(lang, `journal/month/${prev}`, base)}>← {ui.journal.prevMonth}</a>}
+  {next && <a rel="next" href={localePath(lang, `journal/month/${next}`, base)}>{ui.journal.nextMonth} →</a>}
+</p>
+<section id="calendar" aria-labelledby="calendar-title">
+  <h2 id="calendar-title" class="subhead">{ui.journal.monthNames[mo - 1]} {year}</h2>
+  <table class="calendar">
+    <thead>
+      <tr>{ui.journal.weekdays.map((d) => <th scope="col">{d}</th>)}</tr>
+    </thead>
+    <tbody>
+      {grid.map((week) => (
+        <tr>
+          {week.map((day) => {
+            if (day === null) return <td></td>;
+            const date = `${month}-${pad(day)}`;
+            const n = counts[date] ?? 0;
+            return (
+              <td>
+                {n > 0 ? (
+                  <a
+                    class="has-entry"
+                    href={localePath(lang, `journal/day/${date}`, base)}
+                    aria-label={`${dayMonthName(day, mo, ui.journal.monthNames, lang)}, ${countText(ui, n)}`}
+                  >{day}</a>
+                ) : day}
+              </td>
+            );
+          })}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</section>

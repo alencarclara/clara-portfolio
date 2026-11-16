@@ -1,0 +1,31 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import JournalTabs from "../../../../components/JournalTabs.astro";
+import Calendar from "../../../../components/Calendar.astro";
+import { getUi } from "../../../../lib/ui";
+import { LANGS, type Lang } from "../../../../lib/i18n";
+import { getJournal } from "../../../../lib/journal-data";
+import { monthsWithEntries } from "../../../../lib/journal";
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of LANGS) {
+    for (const month of monthsWithEntries(await getJournal(lang))) paths.push({ params: { lang, month } });
+  }
+  return paths;
+}
+const { lang, month } = Astro.params as { lang: Lang; month: string };
+const ui = await getUi(lang);
+const page = ui.pages.journal;
+const entries = await getJournal(lang);
+const months = monthsWithEntries(entries);
+const i = months.indexOf(month);
+const counts: Record<string, number> = {};
+for (const e of entries) counts[e.data.date] = (counts[e.data.date] ?? 0) + 1;
+---
+<Base title={page.title} current="journal" lang={lang} path={`journal/month/${month}`}>
+  <h1>{page.title}</h1>
+  <p class="muted prose">{page.intro}</p>
+  <JournalTabs ui={ui} lang={lang} current="calendar" />
+  <Calendar ui={ui} lang={lang} month={month} counts={counts} prev={months[i - 1]} next={months[i + 1]} />
+</Base>

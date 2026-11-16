@@ -6,17 +6,18 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { getUi } from "../lib/ui";
 import { getPublishedByLang } from "../lib/published";
-import { htmlLang, otherLang, localePath, type Lang, type Page } from "../lib/i18n";
+import { htmlLang, otherLang, localePath, type Lang, type Page, type PagePath } from "../lib/i18n";
 
-interface Props { title: string; current: "home" | Page; lang: Lang }
-const { title, current, lang } = Astro.props;
+// path: subcaminho do Journal (ex.: "journal/day/2026-11-15"); sem ele vale `current`.
+interface Props { title: string; current: "home" | Page; lang: Lang; path?: PagePath }
+const { title, current, lang, path } = Astro.props;
 const ui = await getUi(lang);
 const about = (await getPublishedByLang("about", lang))[0];
 if (!about) throw new Error(`src/content/about/${lang}.md não encontrado`);
 const linkedin = about.data.linkedin_url;
 const base = import.meta.env.BASE_URL;
 const other = otherLang(lang);
-const otherHref = localePath(other, current === "home" ? undefined : current, base);
+const otherHref = localePath(other, path ?? (current === "home" ? undefined : current), base);
 ---
 <!doctype html>
 <html lang={htmlLang[lang]} data-theme="dark">

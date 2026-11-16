@@ -11,7 +11,9 @@ export const isLang = (v: unknown): v is Lang => (LANGS as readonly unknown[]).i
 export type Page = "activities" | "experience" | "courses" | "projects" | "journal";
 
 // Home com barra final ("/pt/"), páginas sem ("/pt/courses"). O base vem de import.meta.env.BASE_URL.
-export function localePath(lang: Lang, page?: Page, base = "/"): string {
+export type PagePath = Page | `journal/${string}`;
+
+export function localePath(lang: Lang, page?: PagePath, base = "/"): string {
   const b = base.endsWith("/") ? base : `${base}/`;
   return page ? `${b}${lang}/${page}` : `${b}${lang}/`;
 }
