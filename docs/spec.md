@@ -62,6 +62,12 @@ Decisões de schema da slice 1 (detalhes em `docs/slice-1.md`):
 - Sobre (`about`, um arquivo por idioma): `lang`, `title`, `cta_label`, `linkedin_url` obrigatórios; `photo` opcional, e `photo_alt` obrigatório quando há `photo`. O corpo markdown é o texto de apresentação.
 - `translation_of`: nome do arquivo original sem extensão. `draft` ausente conta como publicado; só `getPublished` lê conteúdo.
 
+Decisões de schema da slice 2 (detalhes em `docs/slice-2.md`):
+
+- Experiência e atividade: `end` passa a ser opcional (ausente = em andamento, exibido como "jan 2026 – atual"); quando presente, `end` >= `start`.
+- Nova coleção `ui` (`src/content/ui/pt.json`, `uiSchema` estrito): todos os textos de interface; nenhum componente guarda texto próprio.
+- Rotas provisórias (mudam na slice 3): `/`, `/activities`, `/experience`, `/courses`, `/projects`, `/journal`.
+
 Regras:
 
 - O calendário do Journal mostra um ponto nos dias que têm entrada; clicar abre o dia.
