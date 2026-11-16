@@ -1,0 +1,29 @@
+---
+import ThemeToggle from "./ThemeToggle.astro";
+import type { getUi } from "../lib/ui";
+type Ui = Awaited<ReturnType<typeof getUi>>;
+interface Props { ui: Ui; current: string }
+const { ui, current } = Astro.props;
+const links = [
+  ["/", ui.nav.home, "home"],
+  ["/activities", ui.nav.activities, "activities"],
+  ["/experience", ui.nav.experience, "experience"],
+  ["/courses", ui.nav.courses, "courses"],
+  ["/projects", ui.nav.projects, "projects"],
+  ["/journal", ui.nav.journal, "journal"],
+] as const;
+---
+<header class="site-header">
+  <div class="window-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot dot-accent"></span></div>
+  <div class="header-row">
+    <a class="brand" href="/">{ui.site.name}</a>
+    <ThemeToggle toLight={ui.theme.toLight} toDark={ui.theme.toDark} label={ui.theme.label} />
+  </div>
+  <nav aria-label={ui.nav.label}>
+    <ul>
+      {links.map(([href, label, key]) => (
+        <li><a href={href} aria-current={current === key ? "page" : undefined}>{label}</a></li>
+      ))}
+    </ul>
+  </nav>
+</header>

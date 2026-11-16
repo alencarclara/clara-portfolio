@@ -1,0 +1,24 @@
+---
+import Base from "../layouts/Base.astro";
+import { getUi } from "../lib/ui";
+import { getPublished } from "../lib/published";
+
+const ui = await getUi();
+const page = ui.pages.projects;
+const projects = await getPublished("projects");
+---
+<Base title={page.title} current="projects">
+  <h1>{page.title}</h1>
+  <p class="muted prose">{page.intro}</p>
+  {projects.length === 0 && <p>{page.empty}</p>}
+  {projects.map((p) => (
+    <article class="card">
+      <h2>{p.data.title}</h2>
+      <p class="muted">{p.data.role} · {p.data.period}</p>
+      <p>{p.data.summary}</p>
+      {p.data.outcome && <p>{p.data.outcome}</p>}
+      <p class="muted">{ui.labels.stack}: {p.data.stack.join(", ")}</p>
+      {p.data.url && <p><a href={p.data.url} rel="noopener noreferrer">{ui.labels.visit}</a></p>}
+    </article>
+  ))}
+</Base>

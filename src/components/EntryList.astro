@@ -1,0 +1,20 @@
+---
+// Lista de entradas com período (activities e experience).
+interface Item { org: string; role: string; period: string; summary: string; highlights?: string[]; tools?: string[] }
+interface Props { items: Item[]; labels: { highlights: string; tools: string } }
+const { items, labels } = Astro.props;
+---
+{items.map((i) => (
+  <article class="card">
+    <h2>{i.org}</h2>
+    <p class="muted">{i.role} · {i.period}</p>
+    <p>{i.summary}</p>
+    {i.highlights && i.highlights.length > 0 && (
+      <>
+        <p class="label">{labels.highlights}</p>
+        <ul>{i.highlights.map((h) => <li>{h}</li>)}</ul>
+      </>
+    )}
+    {i.tools && i.tools.length > 0 && <p class="muted">{labels.tools}: {i.tools.join(", ")}</p>}
+  </article>
+))}

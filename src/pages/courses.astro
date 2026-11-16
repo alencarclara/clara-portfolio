@@ -1,0 +1,31 @@
+---
+import Base from "../layouts/Base.astro";
+import { getUi } from "../lib/ui";
+import { getPublished } from "../lib/published";
+import { dayMonth } from "../lib/format";
+
+const ui = await getUi();
+const page = ui.pages.courses;
+const courses = await getPublished("courses");
+const groups = [
+  { name: ui.labels.inProgress, items: courses.filter((c) => c.data.status === "in_progress") },
+  { name: ui.labels.completed, items: courses.filter((c) => c.data.status === "completed") },
+].filter((g) => g.items.length > 0);
+---
+<Base title={page.title} current="courses">
+  <h1>{page.title}</h1>
+  <p class="muted prose">{page.intro}</p>
+  {groups.map((g) => (
+    <section>
+      <h2 class="label">{g.name}</h2>
+      {g.items.map((c) => (
+        <article class="card">
+          <h3>{c.data.title}</h3>
+          <p class="muted">{c.data.provider}{c.data.notes ? ` · ${c.data.notes}` : ""}</p>
+          <progress value={c.data.progress} max="100" aria-label={c.data.title}></progress>
+          <p>{`${c.data.progress}% · ${ui.labels.updated} ${dayMonth(c.data.updated_at)}`}</p>
+        </article>
+      ))}
+    </section>
+  ))}
+</Base>
