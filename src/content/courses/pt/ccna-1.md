@@ -1,4 +1,5 @@
 ---
+lang: pt
 title: CCNA 1
 provider: Cisco
 status: in_progress

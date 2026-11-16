@@ -9,8 +9,19 @@ export const isPublished = (entry: Entry): boolean => entry.data.draft !== true;
 
 export const filterPublished = <T extends Entry>(entries: T[]): T[] => entries.filter(isPublished);
 
+export const filterByLang = <T extends { data: { lang?: string } }>(entries: T[], lang: string): T[] =>
+  entries.filter((e) => e.data.lang === lang);
+
 export async function getPublished<C extends CollectionKey>(collection: C) {
   const { getCollection } = await import("astro:content");
   const entries = (await getCollection(collection)) as CollectionEntry<C>[];
   return filterPublished(entries as (CollectionEntry<C> & Entry)[]);
+}
+
+// Só as entradas publicadas de um idioma (coleções com `lang` no schema).
+export async function getPublishedByLang<C extends "activities" | "courses" | "experience" | "projects" | "about">(
+  collection: C,
+  lang: string,
+) {
+  return filterByLang(await getPublished(collection), lang);
 }

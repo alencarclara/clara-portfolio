@@ -1,4 +1,5 @@
 ---
+lang: pt
 org: PRIO
 role: Estagiária de verão
 start: "2025-01-01"

@@ -5,7 +5,7 @@ import matter from "gray-matter";
 // NOTE: src/lib/published.ts must NOT import "astro:content" at top level, or vitest
 // cannot load it (that virtual module only exists inside Astro). getPublished must use
 // a dynamic `await import("astro:content")` inside the function body only.
-import { isPublished, filterPublished } from "../src/lib/published";
+import { isPublished, filterPublished, filterByLang } from "../src/lib/published";
 
 const srcRoot = path.resolve(__dirname, "../src");
 
@@ -73,5 +73,29 @@ describe("publicados", () => {
       expect(fs.existsSync(helper)).toBe(true);
       expect(fs.readFileSync(helper, "utf8")).toMatch(/\bgetCollection\b/);
     });
+  });
+});
+
+describe("filtro por idioma", () => {
+  const entries = [
+    { id: "pt/a", data: { lang: "pt" } },
+    { id: "en/a", data: { lang: "en" } },
+    { id: "pt/b", data: { lang: "pt", draft: true } },
+  ];
+
+  it("filterByLang mantém só o idioma pedido, na ordem", () => {
+    expect(filterByLang(entries, "pt").map((e) => e.id)).toEqual(["pt/a", "pt/b"]);
+    expect(filterByLang(entries, "en").map((e) => e.id)).toEqual(["en/a"]);
+  });
+
+  it("filterByLang não muta a lista e aceita lista vazia", () => {
+    const copy = [...entries];
+    filterByLang(entries, "pt");
+    expect(entries).toEqual(copy);
+    expect(filterByLang([], "pt")).toEqual([]);
+  });
+
+  it("combinado com filterPublished, rascunho continua de fora", () => {
+    expect(filterByLang(filterPublished(entries), "pt").map((e) => e.id)).toEqual(["pt/a"]);
   });
 });

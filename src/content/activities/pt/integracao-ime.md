@@ -1,4 +1,5 @@
 ---
+lang: pt
 org: Integração IME
 role: Presidente
 start: "2024-08-01"
