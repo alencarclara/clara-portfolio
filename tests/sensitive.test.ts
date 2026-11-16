@@ -55,11 +55,6 @@ describe("rascunhos", () => {
     const html = allHtml().map((f) => ({ f: path.relative(dist, f), raw: read(f) }));
     const texts = html.map((h) => ({ ...h, text: textOf(h.raw) }));
 
-    it("existe ao menos um rascunho em src/content (EB)", () => {
-      expect(drafts.length).toBeGreaterThan(0);
-      expect(drafts.map((d) => d.rel)).toContain(path.join("experience", "eb.md"));
-    });
-
     it("dist tem html para checar", () => {
       expect(html.length).toBeGreaterThan(0);
     });

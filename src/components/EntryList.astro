@@ -11,7 +11,7 @@ const { items, labels } = Astro.props;
     <p>{i.summary}</p>
     {i.highlights && i.highlights.length > 0 && (
       <>
-        <p class="label">{labels.highlights}</p>
+        <p class="subhead">{labels.highlights}</p>
         <ul>{i.highlights.map((h) => <li>{h}</li>)}</ul>
       </>
     )}

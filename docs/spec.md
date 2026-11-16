@@ -50,14 +50,14 @@ Cada tipo de conteúdo é um arquivo markdown com campos obrigatórios; se falta
 | Tema (aba Temas) | `slug`, `lang`, `title` | `summary` escrito à mão; as entradas do tema entram automaticamente pelas tags |
 | Curso | `title`, `provider`, `status` (concluído ou em andamento), `progress` (0 a 100), `updated_at` | `started_at`, `finished_at`, `url`, `certificate_url`, `notes` |
 | Projeto | `title`, `status`, `role`, `stack`, `summary`, `period` | `url`, `screenshot`, `outcome`, `draft` |
-| Experiência (estágio, pesquisa) | `org`, `role`, `start`, `end`, `summary` | `highlights`, `tools`, `draft` |
-| Atividade extracurricular | `org`, `role`, `start`, `end`, `summary` | `highlights` (números), `draft` |
+| Experiência (estágio, pesquisa) | `org`, `role`, `start`, `summary` | `end` (ausente = em andamento), `highlights`, `tools`, `draft` |
+| Atividade extracurricular | `org`, `role`, `start`, `summary` | `end` (ausente = em andamento), `highlights` (números), `draft` |
 
 Decisões de schema da slice 1 (detalhes em `docs/slice-1.md`):
 
 - Todos os schemas rejeitam campos desconhecidos; strings são não vazias; datas existem no calendário.
 - `status` (cursos e projetos): `completed` ou `in_progress`; os rótulos "concluído" e "em andamento" vêm do conteúdo i18n.
-- Experiência e atividade: `end` obrigatório e `end` >= `start`. Cursos: `finished_at` >= `started_at`.
+- Experiência e atividade: `end` >= `start` quando presente (ver slice 2: `end` é opcional). Cursos: `finished_at` >= `started_at`.
 - Tema: `slug` em kebab-case, `lang`, `title`, `summary` opcional (coleção `themes`).
 - Sobre (`about`, um arquivo por idioma): `lang`, `title`, `cta_label`, `linkedin_url` obrigatórios; `photo` opcional, e `photo_alt` obrigatório quando há `photo`. O corpo markdown é o texto de apresentação.
 - `translation_of`: nome do arquivo original sem extensão. `draft` ausente conta como publicado; só `getPublished` lê conteúdo.
