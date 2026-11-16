@@ -4,10 +4,11 @@ Site de currículo online em Astro (estático, conteúdo em markdown validado), 
 
 ## Stack and commands
 - Stack: Node (Astro)
-- Install: `npm install` (package.json is created in slice 1)
+- Install: `npm install`
 - Run: `npm run dev`
-- Test: `npm test` (defined in slice 1: content validation, build, internal link check)
-- Lint/format: `npm run check` (astro check); formatter to be decided in slice 1
+- Test: `npm test` (vitest: content validation and published-entries helper). Build: `npm run build`. The internal link check comes with the pages (slice 2).
+- Lint: `npm run lint` (astro check); formatter deferred until after slice 1
+- Read content only through `getPublished` in src/lib/published.ts (never call `getCollection` elsewhere), so `draft: true` stays hidden
 
 ## Conventions
 - docs/spec.md is the source of truth. Content lives in src/content/ as markdown with frontmatter validated by schemas; components never hard-code text. EN and PT versions of each page mirror each other. Mobile-first and keyboard-accessible.
