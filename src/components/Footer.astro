@@ -1,0 +1,12 @@
+---
+import type { getUi } from "../lib/ui";
+type Ui = Awaited<ReturnType<typeof getUi>>;
+interface Props { ui: Ui; linkedin: string }
+const { ui, linkedin } = Astro.props;
+---
+<footer class="statusbar">
+  <span class="seg seg-accent">{ui.footer.branch}</span>
+  <span class="seg">{ui.footer.lang}</span>
+  <span class="seg">{ui.footer.built}</span>
+  <a class="seg" href={linkedin} rel="noopener noreferrer">{ui.home.contact}</a>
+</footer>

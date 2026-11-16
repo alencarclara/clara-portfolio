@@ -35,19 +35,19 @@ describe("publicados", () => {
     });
   });
 
-  describe("fixture de rascunho em disco", () => {
-    it("fica fora do resultado de filterPublished ao ler src/content/journal/en", () => {
-      const dir = path.join(srcRoot, "content/journal/en");
-      expect(fs.existsSync(dir), "src/content/journal/en não existe").toBe(true);
-      const entries = fs
-        .readdirSync(dir)
-        .filter((n) => /^fixture-.*\.md$/.test(n))
-        .map((n) => ({ id: n.replace(/\.md$/, ""), data: matter(fs.readFileSync(path.join(dir, n), "utf8")).data as { draft?: boolean } }));
+  describe("rascunho lido de arquivo de teste (tests/fixtures, fora de src/content)", () => {
+    it("fica fora do resultado de filterPublished", () => {
+      const dir = path.resolve(__dirname, "fixtures");
+      const names = fs.readdirSync(dir).filter((n) => n.endsWith(".md"));
+      const entries = names.map((n) => ({
+        id: n.replace(/\.md$/, ""),
+        data: matter(fs.readFileSync(path.join(dir, n), "utf8")).data as { draft?: boolean },
+      }));
       const drafts = entries.filter((e) => e.data.draft === true);
-      expect(drafts.length, "nenhuma fixture com draft: true em journal/en").toBeGreaterThan(0);
+      expect(drafts.length, "nenhum arquivo com draft: true em tests/fixtures").toBeGreaterThan(0);
       const out = filterPublished(entries).map((e) => e.id);
       for (const d of drafts) expect(out).not.toContain(d.id);
-      expect(out.length, "deve sobrar ao menos uma fixture publicada").toBeGreaterThan(0);
+      expect(out.length, "deve sobrar ao menos um publicado").toBeGreaterThan(0);
     });
   });
 

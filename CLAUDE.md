@@ -6,7 +6,7 @@ Site de currículo online em Astro (estático, conteúdo em markdown validado), 
 - Stack: Node (Astro)
 - Install: `npm install`
 - Run: `npm run dev`
-- Test: `npm test` (vitest: content validation and published-entries helper). Build: `npm run build`. The internal link check comes with the pages (slice 2).
+- Test: `npm test` (vitest: content validation and published-entries helper). The globalSetup runs `astro build`, so the tests also cover the built pages (draft, email/phone, internal links, contrast). E2E (Playwright, theme toggle): `npm run test:e2e`; first time `npx playwright install chromium`. Build: `npm run build`.
 - Lint: `npm run lint` (astro check); formatter deferred until after slice 1
 - Read content only through `getPublished` in src/lib/published.ts (never call `getCollection` elsewhere), so `draft: true` stays hidden
 

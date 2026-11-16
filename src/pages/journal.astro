@@ -1,0 +1,12 @@
+---
+import Base from "../layouts/Base.astro";
+import { getUi } from "../lib/ui";
+
+const ui = await getUi();
+const page = ui.pages.journal;
+---
+<Base title={page.title} current="journal">
+  <h1>{page.title}</h1>
+  <p class="muted prose">{page.intro}</p>
+  <p>{page.soon}</p>
+</Base>

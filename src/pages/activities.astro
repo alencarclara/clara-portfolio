@@ -1,0 +1,20 @@
+---
+import Base from "../layouts/Base.astro";
+import EntryList from "../components/EntryList.astro";
+import { getUi } from "../lib/ui";
+import { getPublished } from "../lib/published";
+import { period } from "../lib/format";
+
+const ui = await getUi();
+const page = ui.pages.activities;
+const entries = (await getPublished("activities")).sort((a, b) => b.data.start.localeCompare(a.data.start));
+const items = entries.map((e) => ({
+  ...e.data,
+  period: period(e.data.start, e.data.end, ui.months, ui.labels.present),
+}));
+---
+<Base title={page.title} current="activities">
+  <h1>{page.title}</h1>
+  <p class="muted prose">{page.intro}</p>
+  <EntryList items={items} labels={ui.labels} />
+</Base>

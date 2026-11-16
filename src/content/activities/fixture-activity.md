@@ -1,7 +1,0 @@
----
-org: Fixture Club
-role: Fixture Member
-start: "2024-01-01"
-end: "2025-01-01"
-summary: Activity used only to exercise the schema.
----

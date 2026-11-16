@@ -11,6 +11,7 @@ import {
   experienceSchema,
   activitiesSchema,
   aboutSchema,
+  uiSchema,
 } from "../src/lib/schemas";
 
 // Valid baseline objects, inline (no fixtures). Each test mutates a copy.
@@ -76,8 +77,8 @@ const required: Record<string, string[]> = {
   themes: ["slug", "lang", "title"],
   courses: ["title", "provider", "status", "progress", "updated_at"],
   projects: ["title", "status", "role", "stack", "summary", "period"],
-  experience: ["org", "role", "start", "end", "summary"],
-  activities: ["org", "role", "start", "end", "summary"],
+  experience: ["org", "role", "start", "summary"],
+  activities: ["org", "role", "start", "summary"],
   about: ["lang", "title", "cta_label", "linkedin_url"],
 };
 
@@ -167,6 +168,18 @@ describe("validação", () => {
     it("experience: end < start funciona também com objetos Date", () => {
       const r = parse("experience", make("experience", { start: new Date("2026-05-02"), end: new Date("2026-05-01") }));
       expect(r.success).toBe(false);
+    });
+
+    it.each(["experience", "activities"])("%s: end ausente é aceito (em andamento)", (c) => {
+      const obj = make(c);
+      delete obj.end;
+      expect(parse(c, obj).success).toBe(true);
+    });
+
+    it.each(["experience", "activities"])("%s: end presente e < start falha, nomeando end", (c) => {
+      const r = parse(c, make(c, { start: "2026-01-01", end: "2025-12-31" }));
+      expect(r.success).toBe(false);
+      expect(issuePaths(r)).toContain("end");
     });
 
     it("courses: finished_at < started_at falha, igual ou maior passa", () => {
@@ -265,38 +278,47 @@ describe("validação", () => {
 });
 
 // ---------------------------------------------------------------------------
-// On-disk fixtures (criteria 2 and 6). These FAIL until src/content/**/fixture-*.md exist.
+// Conteúdo real em disco: todo .md de src/content valida, e ui/*.json valida em uiSchema.
 // ---------------------------------------------------------------------------
 const contentRoot = path.resolve(__dirname, "../src/content");
 
-function findMarkdown(dir: string, pattern = /\.md$/): string[] {
+function findFiles(dir: string, pattern: RegExp): string[] {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) return findMarkdown(p, pattern);
+    if (e.isDirectory()) return findFiles(p, pattern);
     return e.isFile() && pattern.test(e.name) ? [p] : [];
   });
 }
-const findFixtures = (dir: string) => findMarkdown(dir, /^fixture-.*\.md$/);
+const findMarkdown = (dir: string) => findFiles(dir, /\.md$/);
 
-const fixtures = findFixtures(contentRoot);
+const mdFiles = findMarkdown(contentRoot);
 const collectionOf = (f: string) => path.relative(contentRoot, f).split(path.sep)[0];
 
-describe("validação > fixtures em disco", () => {
-  it.each(collections)("existe ao menos uma fixture para %s", (c) => {
-    const found = fixtures.filter((f) => collectionOf(f) === c);
-    expect(found.length, `nenhum src/content/${c}/**/fixture-*.md encontrado`).toBeGreaterThan(0);
+describe("validação > conteúdo em disco", () => {
+  it("nenhum arquivo fixture-* sobrou em src/content", () => {
+    expect(findFiles(contentRoot, /^fixture-/).map((f) => path.relative(contentRoot, f))).toEqual([]);
   });
 
-  it("journal tem fixtures em en e pt", () => {
-    for (const lang of ["en", "pt"]) {
-      const found = fixtures.filter((f) => f.startsWith(path.join(contentRoot, "journal", lang) + path.sep));
-      expect(found.length, `nenhuma fixture em journal/${lang}`).toBeGreaterThan(0);
-    }
+  it.each(["about", "courses", "projects", "experience", "activities"])(
+    "existe conteúdo real para %s",
+    (c) => {
+      const found = mdFiles.filter((f) => collectionOf(f) === c);
+      expect(found.length, `nenhum src/content/${c}/**/*.md encontrado`).toBeGreaterThan(0);
+    },
+  );
+
+  it.each(["en", "pt"])("about/%s.md existe e tem lang igual ao nome", (lang) => {
+    const f = path.join(contentRoot, "about", `${lang}.md`);
+    expect(fs.existsSync(f), `falta ${f}`).toBe(true);
+    expect(matter(fs.readFileSync(f, "utf8")).data.lang).toBe(lang);
   });
 
-  describe("fixtures válidas passam", () => {
-    it.each(fixtures.map((f) => [path.relative(contentRoot, f), f]))("%s", (_name, f) => {
+  describe("todo .md de src/content valida no schema da sua coleção", () => {
+    it("há ao menos um .md", () => {
+      expect(mdFiles.length).toBeGreaterThan(0);
+    });
+    it.each(mdFiles.map((f) => [path.relative(contentRoot, f), f]))("%s", (_name, f) => {
       const c = collectionOf(f);
       expect(schemas[c], `coleção desconhecida: ${c}`).toBeDefined();
       const { data } = matter(fs.readFileSync(f, "utf8"));
@@ -307,15 +329,74 @@ describe("validação > fixtures em disco", () => {
 
   describe("lang bate com a pasta", () => {
     for (const lang of ["en", "pt"]) {
-      it(`journal/${lang}/ contém só lang: ${lang}`, () => {
-        // Todos os .md da pasta (não só fixtures): vale também para o conteúdo real.
-        const dir = path.join(contentRoot, "journal", lang);
-        const found = findMarkdown(dir);
-        expect(found.length, `nenhum arquivo em journal/${lang}`).toBeGreaterThan(0);
+      it(`journal/${lang}/ contém só lang: ${lang} (pasta vazia ou ausente é aceita)`, () => {
+        const found = findMarkdown(path.join(contentRoot, "journal", lang));
         for (const f of found) {
           expect(matter(fs.readFileSync(f, "utf8")).data.lang, f).toBe(lang);
         }
       });
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// uiSchema: sem contrato sobre as chaves; testado de forma genérica.
+// ---------------------------------------------------------------------------
+type Json = null | boolean | number | string | Json[] | { [k: string]: Json };
+
+// Todos os caminhos de chaves de objetos (recursivo, entrando em arrays).
+function keyPaths(v: Json, prefix: (string | number)[] = []): (string | number)[][] {
+  if (Array.isArray(v)) return v.flatMap((x, i) => keyPaths(x, [...prefix, i]));
+  if (v && typeof v === "object") {
+    return Object.entries(v).flatMap(([k, x]) => [[...prefix, k], ...keyPaths(x, [...prefix, k])]);
+  }
+  return [];
+}
+function without(v: Json, p: (string | number)[]): Json {
+  const copy = structuredClone(v) as any;
+  let node = copy;
+  for (const k of p.slice(0, -1)) node = node[k];
+  delete node[p[p.length - 1]];
+  return copy;
+}
+
+const uiDir = path.join(contentRoot, "ui");
+const uiFiles = findFiles(uiDir, /\.json$/);
+const ptFile = path.join(uiDir, "pt.json");
+
+describe("validação > uiSchema", () => {
+  it("uiSchema é exportado de src/lib/schemas", () => {
+    expect(uiSchema, "uiSchema não exportado").toBeDefined();
+    expect(typeof uiSchema.safeParse).toBe("function");
+  });
+
+  it("src/content/ui/pt.json existe", () => {
+    expect(fs.existsSync(ptFile)).toBe(true);
+  });
+
+  it.each(uiFiles.map((f) => [path.relative(contentRoot, f), f]))("%s valida em uiSchema", (_n, f) => {
+    const r = uiSchema.safeParse(JSON.parse(fs.readFileSync(f, "utf8")));
+    expect(r.success, JSON.stringify((r as any).error?.issues)).toBe(true);
+  });
+
+  const real: Json | undefined = fs.existsSync(ptFile) ? JSON.parse(fs.readFileSync(ptFile, "utf8")) : undefined;
+  const paths = real ? keyPaths(real) : [];
+
+  it("pt.json tem ao menos uma chave", () => {
+    expect(paths.length).toBeGreaterThan(0);
+  });
+
+  it.each(paths.map((p) => [p.join(".")]))("remover a chave %s falha", (dotted) => {
+    const p = paths.find((x) => x.join(".") === dotted)!;
+    expect(uiSchema.safeParse(without(real!, p)).success).toBe(false);
+  });
+
+  it("chave desconhecida no topo falha (strict)", () => {
+    expect(real).toBeDefined();
+    expect(uiSchema.safeParse({ ...(real as object), chave_inexistente_xyz: "x" }).success).toBe(false);
+  });
+
+  it("objeto vazio falha", () => {
+    expect(uiSchema.safeParse({}).success).toBe(false);
   });
 });
