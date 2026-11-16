@@ -1,6 +1,7 @@
 // Schemas Zod puros. Não importar nada do runtime do Astro além de `astro/zod`,
 // para que o vitest consiga carregar este arquivo.
 import { z } from "astro/zod";
+import { tagSlug } from "./journal";
 
 const text = z.string().min(1);
 const textList = z.array(text);
@@ -42,7 +43,12 @@ export const journalSchema = z
     links: z.array(url).optional(),
     translation_of: text.optional(),
   })
-  .strict();
+  .strict()
+  .superRefine((v, ctx) => {
+    v.tags.forEach((t, i) => {
+      if (tagSlug(t) === "") ctx.addIssue({ code: "custom", path: ["tags", i], message: "tag precisa ter ao menos uma letra ou número (A-Z, 0-9) para gerar o slug do tema" });
+    });
+  });
 
 export const themesSchema = z
   .object({

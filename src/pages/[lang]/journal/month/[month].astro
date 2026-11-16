@@ -23,7 +23,7 @@ const i = months.indexOf(month);
 const counts: Record<string, number> = {};
 for (const e of entries) counts[e.data.date] = (counts[e.data.date] ?? 0) + 1;
 ---
-<Base title={page.title} current="journal" lang={lang} path={`journal/month/${month}`}>
+<Base title={`${ui.journal.monthNames[Number(month.slice(5)) - 1]} ${month.slice(0, 4)} · ${page.title}`} current="journal" lang={lang} path={`journal/month/${month}`}>
   <h1>{page.title}</h1>
   <p class="muted prose">{page.intro}</p>
   <JournalTabs ui={ui} lang={lang} current="calendar" />

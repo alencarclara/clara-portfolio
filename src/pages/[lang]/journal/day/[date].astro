@@ -22,13 +22,13 @@ const title = longDate(date, ui.journal.monthNames, lang);
   <h1>{title}</h1>
   <p><a href={localePath(lang, `journal/month/${date.slice(0, 7)}`, base)}>← {ui.journal.backToCalendar}</a></p>
   {entries.map((e) => (
-    <article class="card" lang={e.untranslated ? e.data.lang : undefined}>
-      <h2>{e.data.title}</h2>
+    <article class="card">
+      <h2 lang={e.untranslated ? e.data.lang : undefined}>{e.data.title}</h2>
       {e.untranslated && <p class="muted">{ui.journal.untranslated}</p>}
       <p class="subhead">{ui.journal.did}</p>
-      <p>{e.data.did}</p>
+      <p lang={e.untranslated ? e.data.lang : undefined}>{e.data.did}</p>
       <p class="subhead">{ui.journal.learned}</p>
-      <p>{e.data.learned}</p>
+      <p lang={e.untranslated ? e.data.lang : undefined}>{e.data.learned}</p>
       <p class="muted">
         {ui.journal.tags}:{" "}
         {e.data.tags.map((t, i) => (

@@ -246,6 +246,12 @@ describe("validação", () => {
     it("journal: translation_of string opcional", () => {
       expect(parse("journal", make("journal", { translation_of: "2026-11-15-spec" })).success).toBe(true);
     });
+    it("journal: toda tag precisa gerar um slug de tema não vazio", () => {
+      expect(parse("journal", make("journal", { tags: ["Machine Learning", "Ação"] })).success).toBe(true);
+      for (const t of ["++", "日本語", "---"]) {
+        expect(parse("journal", make("journal", { tags: ["ok", t] })).success, t).toBe(false);
+      }
+    });
     it("themes: slug precisa ser kebab-case", () => {
       expect(parse("themes", make("themes", { slug: "ok-slug-2" })).success).toBe(true);
       for (const s of ["Not Kebab", "snake_case", "UPPER", "-lead", "trail-", "a--b"]) {

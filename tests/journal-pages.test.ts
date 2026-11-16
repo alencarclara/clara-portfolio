@@ -164,7 +164,12 @@ describe.each(LANGS)("journal > páginas [%s]", (lang: Lang) => {
         for (const r of resolved.filter((x) => x.date === d)) {
           const art = articles.find((a) => textOf(a[2]).includes(norm(r.entry.data.title)))!;
           expect(textOf(art[2]).includes(ui.journal.untranslated), `${r.name}: aviso`).toBe(r.untranslated);
-          if (r.untranslated) expect(art[1], `${r.name}: lang da original`).toMatch(new RegExp(`\\blang=["']?${r.entry.data.lang}\\b`));
+          // O texto da entrada leva o lang da original; o aviso (idioma da interface) não pode herdá-lo.
+          const L = r.entry.data.lang;
+          const langRe = new RegExp(`<(h2|p)\\b[^>]*\\blang=["']?${L}\\b[^>]*>`, "gi");
+          const withLang = [...art[2].matchAll(langRe)].length;
+          expect(withLang, `${r.name}: lang da original em título, did e learned`).toBe(r.untranslated ? 3 : 0);
+          expect(art[1], `${r.name}: <article> sem lang`).not.toMatch(/\blang=/);
         }
       }
     });

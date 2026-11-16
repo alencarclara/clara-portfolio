@@ -27,8 +27,8 @@ const info = await getThemeInfo(lang, slug, spellingsOf(theme.entries, slug));
     {theme.entries.map((e) => (
       <li>
         <a href={localePath(lang, `journal/day/${e.data.date}`, base)}>{longDate(e.data.date, ui.journal.monthNames, lang)}</a>
-        <span class="muted"> · {e.data.title}</span>
-        {e.untranslated && <span class="muted" lang={e.data.lang}> ({ui.journal.untranslated})</span>}
+        <span class="muted"> · <span lang={e.untranslated ? e.data.lang : undefined}>{e.data.title}</span></span>
+        {e.untranslated && <span class="muted"> ({ui.journal.untranslated})</span>}
       </li>
     ))}
   </ul>
