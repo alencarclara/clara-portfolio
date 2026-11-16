@@ -1,47 +1,42 @@
 ---
-import { Image } from "astro:assets";
-import { render } from "astro:content";
-import Base from "../layouts/Base.astro";
+import "@fontsource/jetbrains-mono/latin-400.css";
+import "@fontsource/jetbrains-mono/latin-700.css";
+import "../styles/global.css";
 import { getUi } from "../lib/ui";
-import { getPublished } from "../lib/published";
+import { LANGS, localePath } from "../lib/i18n";
 
-const ui = await getUi();
-const entry = (await getPublished("about")).find((e) => e.id === "pt");
-if (!entry) throw new Error("src/content/about/pt.md não encontrado");
-const { Content } = await render(entry);
-const { title, cta_label, photo, photo_alt, linkedin_url } = entry.data;
-
-const images = import.meta.glob<{ default: ImageMetadata }>("../assets/*.{jpg,jpeg,png,webp}", { eager: true });
-const photoSrc = photo ? Object.entries(images).find(([p]) => p.endsWith(`/${photo}`))?.[1].default : undefined;
-if (photo && !photoSrc) throw new Error(`foto não encontrada em src/assets: ${photo}`);
-
-const pages = [
-  ["/activities", ui.pages.activities.title],
-  ["/experience", ui.pages.experience.title],
-  ["/courses", ui.pages.courses.title],
-  ["/projects", ui.pages.projects.title],
-  ["/journal", ui.pages.journal.title],
-] as const;
+// Raiz: escolhe o idioma pelo navegador (script); sem JS, os dois links ficam visíveis, PT primeiro.
+const base = import.meta.env.BASE_URL;
+const uis = await Promise.all(LANGS.map((l) => getUi(l)));
+const options = LANGS.map((l, i) => ({ lang: l, href: localePath(l, undefined, base), name: uis[i].langSwitch.name }));
+const title = uis[0].site.name;
 ---
-<Base title={ui.site.name} current="home">
-  <section class="hero">
-    {photoSrc && <Image src={photoSrc} alt={photo_alt!} width={320} height={320} />}
-    <div class="hero-text">
-      <p class="label">{ui.home.whoami}</p>
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <script is:inline>
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <main id="main">
       <h1>{title}</h1>
-      <div class="prose"><Content /></div>
-      <p>
-        <a class="button" href="#paginas">{cta_label}</a>
-        {" "}
-        <a href={linkedin_url} rel="noopener noreferrer">{ui.home.contact}</a>
-      </p>
-    </div>
-  </section>
-  <hr />
-  <section id="paginas">
-    <h2 class="label">{ui.home.pages}</h2>
-    <ul class="page-list">
-      {pages.map(([href, label]) => <li><a href={href}>{label}</a></li>)}
-    </ul>
-  </section>
-</Base>
+      <ul class="page-list">
+        {options.map((o) => <li><a href={o.href} hreflang={o.lang} lang={o.lang}>{o.name}</a></li>)}
+      </ul>
+    </main>
+    <script is:inline>
+      (function () {
+        var l = (navigator.languages && navigator.languages[0]) || navigator.language || "";
+        var target = document.querySelector('a[hreflang="' + (l.toLowerCase().indexOf("en") === 0 ? "en" : "pt") + '"]');
+        if (target) location.replace(target.getAttribute("href"));
+      })();
+    </script>
+  </body>
+</html>

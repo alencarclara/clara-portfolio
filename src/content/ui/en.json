@@ -1,0 +1,52 @@
+{
+  "site": { "name": "Clara Alencar", "skip": "Skip to content" },
+  "nav": {
+    "label": "Main",
+    "home": "Home",
+    "activities": "Activities",
+    "experience": "Internships and Research",
+    "courses": "Courses",
+    "projects": "Projects",
+    "journal": "Journal"
+  },
+  "theme": { "toLight": "[ light ]", "toDark": "[ dark ]", "label": "Toggle theme" },
+  "langSwitch": { "label": "PT: switch to Portuguese", "text": "[ PT ]", "name": "English" },
+  "home": { "whoami": "$ whoami", "pages": "$ ls pages/", "contact": "LinkedIn" },
+  "pages": {
+    "activities": {
+      "title": "Extracurricular Activities",
+      "intro": "Student organizations I lead or take part in."
+    },
+    "experience": {
+      "title": "Internships and Research",
+      "intro": "Internships and research."
+    },
+    "courses": {
+      "title": "Courses",
+      "intro": "What I'm studying, with the progress and the date of the last update."
+    },
+    "projects": {
+      "title": "Projects",
+      "intro": "Sites and apps I built.",
+      "empty": "Projects will show up here soon."
+    },
+    "journal": {
+      "title": "Journal",
+      "intro": "The public diary of what I do and learn.",
+      "soon": "Coming soon: a calendar of achievements and summaries by theme."
+    }
+  },
+  "labels": {
+    "present": "present",
+    "updated": "updated",
+    "inProgress": "In progress",
+    "completed": "Completed",
+    "highlights": "Highlights",
+    "tools": "Tools",
+    "stack": "Stack",
+    "role": "Role",
+    "visit": "Visit"
+  },
+  "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  "footer": { "branch": "main", "lang": "en", "built": "built with Astro" }
+}

@@ -5,20 +5,26 @@ import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { getUi } from "../lib/ui";
-import { getPublished } from "../lib/published";
+import { getPublishedByLang } from "../lib/published";
+import { htmlLang, otherLang, localePath, type Lang, type Page } from "../lib/i18n";
 
-interface Props { title: string; current: string }
-const { title, current } = Astro.props;
-const ui = await getUi();
-const about = (await getPublished("about")).find((e) => e.id === "pt");
-const linkedin = about!.data.linkedin_url;
+interface Props { title: string; current: "home" | Page; lang: Lang }
+const { title, current, lang } = Astro.props;
+const ui = await getUi(lang);
+const about = (await getPublishedByLang("about", lang))[0];
+if (!about) throw new Error(`src/content/about/${lang}.md não encontrado`);
+const linkedin = about.data.linkedin_url;
+const base = import.meta.env.BASE_URL;
+const other = otherLang(lang);
+const otherHref = localePath(other, current === "home" ? undefined : current, base);
 ---
 <!doctype html>
-<html lang="pt-BR" data-theme="dark">
+<html lang={htmlLang[lang]} data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title === ui.site.name ? title : `${title} · ${ui.site.name}`}</title>
+    <link rel="alternate" hreflang={other} href={otherHref} />
     <script is:inline>
       try {
         var t = localStorage.getItem("theme");
@@ -28,7 +34,7 @@ const linkedin = about!.data.linkedin_url;
   </head>
   <body>
     <a class="skip" href="#main">{ui.site.skip}</a>
-    <Header ui={ui} current={current} />
+    <Header ui={ui} current={current} lang={lang} otherHref={otherHref} />
     <main id="main"><slot /></main>
     <Footer ui={ui} linkedin={linkedin} />
   </body>

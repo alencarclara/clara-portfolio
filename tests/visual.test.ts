@@ -133,7 +133,7 @@ describe("tema", () => {
     });
 
     it("script inline no <head> lê localStorage dentro de try/catch (sem flash)", () => {
-      const head = /<head\b[\s\S]*?<\/head>/i.exec(pageHtml("/"))?.[0] ?? "";
+      const head = /<head\b[\s\S]*?<\/head>/i.exec(pageHtml("/pt"))?.[0] ?? "";
       const inline = [...head.matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)].map((m) => m[1]);
       expect(inline.some((s) => /localStorage/.test(s) && /\btry\b/.test(s) && /\bcatch\b/.test(s) && /data-theme|dataset\.theme/.test(s))).toBe(true);
     });

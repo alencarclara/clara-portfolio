@@ -26,6 +26,7 @@ const valid: Record<string, Record<string, unknown>> = {
   },
   themes: { slug: "astro-basics", lang: "pt", title: "Astro" },
   courses: {
+    lang: "en",
     title: "Intro to ML",
     provider: "Some Provider",
     status: "in_progress",
@@ -33,6 +34,7 @@ const valid: Record<string, Record<string, unknown>> = {
     updated_at: "2026-11-12",
   },
   projects: {
+    lang: "en",
     title: "Portfolio",
     status: "in_progress",
     role: "Author",
@@ -41,6 +43,7 @@ const valid: Record<string, Record<string, unknown>> = {
     period: "2025–2026",
   },
   experience: {
+    lang: "en",
     org: "Org",
     role: "Intern",
     start: "2024-01-01",
@@ -48,6 +51,7 @@ const valid: Record<string, Record<string, unknown>> = {
     summary: "Did things",
   },
   activities: {
+    lang: "en",
     org: "Org",
     role: "Member",
     start: "2023-01-01",
@@ -75,10 +79,10 @@ const schemas: Record<string, ZodTypeAny> = {
 const required: Record<string, string[]> = {
   journal: ["date", "lang", "title", "did", "learned", "tags"],
   themes: ["slug", "lang", "title"],
-  courses: ["title", "provider", "status", "progress", "updated_at"],
-  projects: ["title", "status", "role", "stack", "summary", "period"],
-  experience: ["org", "role", "start", "summary"],
-  activities: ["org", "role", "start", "summary"],
+  courses: ["lang", "title", "provider", "status", "progress", "updated_at"],
+  projects: ["lang", "title", "status", "role", "stack", "summary", "period"],
+  experience: ["lang", "org", "role", "start", "summary"],
+  activities: ["lang", "org", "role", "start", "summary"],
   about: ["lang", "title", "cta_label", "linkedin_url"],
 };
 
@@ -190,7 +194,7 @@ describe("validação", () => {
   });
 
   describe("lang", () => {
-    const withLang = ["journal", "themes", "about"];
+    const withLang = ["journal", "themes", "about", "courses", "projects", "experience", "activities"];
     it.each(withLang)("%s aceita en e pt", (c) => {
       expect(parse(c, make(c, { lang: "en" })).success).toBe(true);
       expect(parse(c, make(c, { lang: "pt" })).success).toBe(true);
@@ -292,6 +296,7 @@ function findFiles(dir: string, pattern: RegExp): string[] {
 }
 const findMarkdown = (dir: string) => findFiles(dir, /\.md$/);
 
+const PER_LANG = ["activities", "courses", "experience", "projects"];
 const mdFiles = findMarkdown(contentRoot);
 const collectionOf = (f: string) => path.relative(contentRoot, f).split(path.sep)[0];
 
@@ -333,6 +338,38 @@ describe("validação > conteúdo em disco", () => {
         const found = findMarkdown(path.join(contentRoot, "journal", lang));
         for (const f of found) {
           expect(matter(fs.readFileSync(f, "utf8")).data.lang, f).toBe(lang);
+        }
+      });
+    }
+
+    for (const c of PER_LANG) {
+      it(`${c}: todo .md está em ${c}/pt/ ou ${c}/en/ e o lang bate com a pasta`, () => {
+        const files = findMarkdown(path.join(contentRoot, c));
+        expect(files.length, `nenhum .md em src/content/${c}`).toBeGreaterThan(0);
+        for (const f of files) {
+          const [folder, ...rest] = path.relative(path.join(contentRoot, c), f).split(path.sep);
+          expect(["en", "pt"], `${c}/${folder}: pasta de idioma esperada (pt ou en), sem subpastas`).toContain(folder);
+          expect(rest.length, `${f}: sem subpastas dentro de ${c}/${folder}`).toBe(1);
+          expect(matter(fs.readFileSync(f, "utf8")).data.lang, f).toBe(folder);
+        }
+      });
+    }
+  });
+
+  describe("espelho pt/en: mesmo nome de arquivo, mesmo draft", () => {
+    const names = (c: string, lang: string) =>
+      findMarkdown(path.join(contentRoot, c, lang)).map((f) => path.basename(f)).sort();
+    const draftOf = (c: string, lang: string, n: string) =>
+      matter(fs.readFileSync(path.join(contentRoot, c, lang, n), "utf8")).data.draft === true;
+
+    for (const c of PER_LANG) {
+      it(`${c}: pt/ e en/ têm os mesmos arquivos`, () => {
+        expect(names(c, "en")).toEqual(names(c, "pt"));
+      });
+      it(`${c}: um arquivo e o seu espelho têm o mesmo estado de draft`, () => {
+        for (const n of names(c, "pt")) {
+          if (!fs.existsSync(path.join(contentRoot, c, "en", n))) continue;
+          expect(draftOf(c, "en", n), `${c}/${n}: draft difere entre pt e en`).toBe(draftOf(c, "pt", n));
         }
       });
     }

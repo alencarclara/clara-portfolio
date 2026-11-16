@@ -55,6 +55,7 @@ export const themesSchema = z
 
 export const coursesSchema = z
   .object({
+    lang,
     title: text,
     provider: text,
     status,
@@ -65,12 +66,14 @@ export const coursesSchema = z
     url: url.optional(),
     certificate_url: url.optional(),
     notes: text.optional(),
+    translation_of: text.optional(),
   })
   .strict()
   .superRefine(order("started_at", "finished_at"));
 
 export const projectsSchema = z
   .object({
+    lang,
     title: text,
     status,
     role: text,
@@ -81,11 +84,13 @@ export const projectsSchema = z
     screenshot: text.optional(),
     outcome: text.optional(),
     draft: z.boolean().default(false),
+    translation_of: text.optional(),
   })
   .strict();
 
 export const experienceSchema = z
   .object({
+    lang,
     org: text,
     role: text,
     start: date,
@@ -94,12 +99,14 @@ export const experienceSchema = z
     highlights: textList.optional(),
     tools: textList.optional(),
     draft: z.boolean().default(false),
+    translation_of: text.optional(),
   })
   .strict()
   .superRefine(order("start", "end"));
 
 export const activitiesSchema = z
   .object({
+    lang,
     org: text,
     role: text,
     start: date,
@@ -107,6 +114,7 @@ export const activitiesSchema = z
     summary: text,
     highlights: textList.optional(),
     draft: z.boolean().default(false),
+    translation_of: text.optional(),
   })
   .strict()
   .superRefine(order("start", "end"));
@@ -137,6 +145,7 @@ export const uiSchema = z
       .object({ label: text, home: text, activities: text, experience: text, courses: text, projects: text, journal: text })
       .strict(),
     theme: z.object({ toLight: text, toDark: text, label: text }).strict(),
+    langSwitch: z.object({ label: text, text, name: text }).strict(),
     home: z.object({ whoami: text, pages: text, contact: text }).strict(),
     pages: z
       .object({

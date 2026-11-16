@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 
-const ROUTES = ["/", "/activities", "/experience", "/courses", "/projects", "/journal"];
+const PAGES = ["", "/activities", "/experience", "/courses", "/projects", "/journal"];
+const ROUTES = ["pt", "en"].flatMap((l) => PAGES.map((p) => `/${l}${p}`));
 const theme = (page: Page) => page.locator("html").getAttribute("data-theme");
 const toggle = (page: Page) => page.locator("#theme-toggle");
 
@@ -8,19 +9,19 @@ test.describe("tema", () => {
   test("padrão escuro sem JS (critério 12)", async ({ browser }) => {
     const ctx = await browser.newContext({ javaScriptEnabled: false });
     const page = await ctx.newPage();
-    await page.goto("/");
+    await page.goto("/pt/");
     expect(await theme(page)).toBe("dark");
     await ctx.close();
   });
 
   test("padrão escuro com JS e sem valor salvo; botão mostra [ light ]", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/pt/");
     expect(await theme(page)).toBe("dark");
     await expect(toggle(page)).toHaveText("[ light ]");
   });
 
   test("clicar troca para claro, mostra [ dark ] e grava localStorage.theme", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/pt/");
     await toggle(page).click();
     expect(await theme(page)).toBe("light");
     await expect(toggle(page)).toHaveText("[ dark ]");
@@ -28,12 +29,12 @@ test.describe("tema", () => {
   });
 
   test("a escolha persiste após recarregar e vale em outra página, sem flash", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/pt/");
     await toggle(page).click();
     await page.reload();
     expect(await theme(page)).toBe("light");
     await expect(toggle(page)).toHaveText("[ dark ]");
-    await page.goto("/courses");
+    await page.goto("/pt/courses");
     expect(await theme(page)).toBe("light");
     // Volta para escuro e persiste também.
     await toggle(page).click();
@@ -45,13 +46,13 @@ test.describe("tema", () => {
 
   test("valor salvo 'light' é aplicado antes do DOMContentLoaded (script inline no head)", async ({ page }) => {
     await page.addInitScript(() => localStorage.setItem("theme", "light"));
-    await page.goto("/", { waitUntil: "commit" });
+    await page.goto("/pt/", { waitUntil: "commit" });
     await page.waitForFunction(() => document.documentElement.dataset.theme === "light");
   });
 
   test("valor salvo inválido cai no escuro", async ({ page }) => {
     await page.addInitScript(() => localStorage.setItem("theme", "banana"));
-    await page.goto("/");
+    await page.goto("/pt/");
     expect(await theme(page)).toBe("dark");
   });
 
@@ -65,7 +66,7 @@ test.describe("tema", () => {
         },
       });
     });
-    await page.goto("/");
+    await page.goto("/pt/");
     expect(await theme(page)).toBe("dark");
     await toggle(page).click();
     expect(await theme(page)).toBe("light");
@@ -74,7 +75,7 @@ test.describe("tema", () => {
   });
 
   test("botão alcançável por Tab, com foco visível, e ativável por teclado", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/pt/");
     let reached = false;
     for (let i = 0; i < 20 && !reached; i++) {
       await page.keyboard.press("Tab");

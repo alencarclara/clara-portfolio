@@ -1,13 +1,18 @@
 ---
-import Base from "../layouts/Base.astro";
-import { getUi } from "../lib/ui";
-import { getPublished } from "../lib/published";
+import Base from "../../layouts/Base.astro";
+import { getUi } from "../../lib/ui";
+import { LANGS, type Lang } from "../../lib/i18n";
+import { getPublishedByLang } from "../../lib/published";
 
-const ui = await getUi();
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+const lang = Astro.params.lang as Lang;
+const ui = await getUi(lang);
 const page = ui.pages.projects;
-const projects = await getPublished("projects");
+const projects = await getPublishedByLang("projects", lang);
 ---
-<Base title={page.title} current="projects">
+<Base title={page.title} current="projects" lang={lang}>
   <h1>{page.title}</h1>
   <p class="muted prose">{page.intro}</p>
   {projects.length === 0 && <p>{page.empty}</p>}
