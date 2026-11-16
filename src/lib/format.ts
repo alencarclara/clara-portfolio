@@ -1,10 +1,12 @@
+import type { Lang } from "./i18n";
+
 // Datas AAAA-MM-DD (já normalizadas pelos schemas) sem passar por Date: sem efeito de fuso.
 export function monthYear(iso: string, months: string[]): string {
   const [y, m] = iso.split("-");
   return `${months[Number(m) - 1]} ${y}`;
 }
 
-export function dayMonth(iso: string, lang: "pt" | "en" = "pt"): string {
+export function dayMonth(iso: string, lang: Lang = "pt"): string {
   const [, m, d] = iso.split("-");
   return lang === "en" ? `${m}/${d}` : `${d}/${m}`;
 }

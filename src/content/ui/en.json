@@ -10,7 +10,7 @@
     "journal": "Journal"
   },
   "theme": { "toLight": "[ light ]", "toDark": "[ dark ]", "label": "Toggle theme" },
-  "langSwitch": { "label": "Switch to Portuguese", "text": "[ PT ]", "name": "English" },
+  "langSwitch": { "label": "PT: switch to Portuguese", "text": "[ PT ]", "name": "English" },
   "home": { "whoami": "$ whoami", "pages": "$ ls pages/", "contact": "LinkedIn" },
   "pages": {
     "activities": {
