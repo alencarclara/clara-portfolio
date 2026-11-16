@@ -1,0 +1,664 @@
+# Configuração do Pages CMS (docs/slice-5.md). Mantido à mão; os campos seguem os schemas em src/lib/schemas.ts
+# e tests/pages-cms.test.ts reprova se divergirem. Sem e-mail, telefone ou segredos aqui.
+content:
+  - name: journal-pt
+    label: Journal (PT)
+    type: collection
+    path: src/content/journal/pt
+    format: yaml-frontmatter
+    fields:
+      - name: date
+        label: Data
+        type: date
+        options:
+          format: yyyy-MM-dd
+        required: true
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: pt
+        options:
+          values:
+            - pt
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - name: did
+        label: O que fiz
+        type: text
+        required: true
+      - name: learned
+        label: O que aprendi
+        type: text
+        required: true
+      - name: tags
+        label: Temas (tags, em inglês)
+        type: string
+        list: true
+        required: true
+      - &a1
+        name: draft
+        label: Rascunho (fica fora do site)
+        type: boolean
+        default: false
+      - name: links
+        label: Links
+        type: string
+        pattern:
+          regex: ^https?://
+          message: Use uma URL completa, começando com http:// ou https://
+        list: true
+      - &a2
+        name: translation_of
+        label: Original (nome do arquivo, sem .md)
+        type: string
+    filename: "{year}-{month}-{day}-{title}.md"
+    view:
+      sort:
+        - date
+      order: desc
+  - name: journal-en
+    label: Journal (EN)
+    type: collection
+    path: src/content/journal/en
+    format: yaml-frontmatter
+    fields:
+      - name: date
+        label: Data
+        type: date
+        options:
+          format: yyyy-MM-dd
+        required: true
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: en
+        options:
+          values:
+            - en
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - name: did
+        label: O que fiz
+        type: text
+        required: true
+      - name: learned
+        label: O que aprendi
+        type: text
+        required: true
+      - name: tags
+        label: Temas (tags, em inglês)
+        type: string
+        list: true
+        required: true
+      - *a1
+      - name: links
+        label: Links
+        type: string
+        pattern:
+          regex: ^https?://
+          message: Use uma URL completa, começando com http:// ou https://
+        list: true
+      - *a2
+    filename: "{year}-{month}-{day}-{title}.md"
+    view:
+      sort:
+        - date
+      order: desc
+  - name: themes-pt
+    label: Temas (PT)
+    type: collection
+    path: src/content/themes/pt
+    format: yaml-frontmatter
+    fields:
+      - name: slug
+        label: Slug (minúsculas e hífens)
+        type: string
+        required: true
+        pattern:
+          regex: ^[a-z0-9]+(-[a-z0-9]+)*$
+          message: "kebab-case: letras minúsculas, números e hífens"
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: pt
+        options:
+          values:
+            - pt
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - name: summary
+        label: Resumo
+        type: text
+    exclude:
+      - .gitkeep
+  - name: themes-en
+    label: Temas (EN)
+    type: collection
+    path: src/content/themes/en
+    format: yaml-frontmatter
+    fields:
+      - name: slug
+        label: Slug (minúsculas e hífens)
+        type: string
+        required: true
+        pattern:
+          regex: ^[a-z0-9]+(-[a-z0-9]+)*$
+          message: "kebab-case: letras minúsculas, números e hífens"
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: en
+        options:
+          values:
+            - en
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - name: summary
+        label: Resumo
+        type: text
+    exclude:
+      - .gitkeep
+  - name: courses-pt
+    label: Cursos (PT)
+    type: collection
+    path: src/content/courses/pt
+    format: yaml-frontmatter
+    fields:
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: pt
+        options:
+          values:
+            - pt
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - name: provider
+        label: Instituição
+        type: string
+        required: true
+      - &a3
+        name: status
+        label: Status
+        type: select
+        required: true
+        options:
+          values:
+            - completed
+            - in_progress
+      - name: progress
+        label: Progresso (%)
+        type: number
+        required: true
+        options:
+          min: 0
+          max: 100
+      - name: updated_at
+        label: Atualizado em
+        type: date
+        options:
+          format: yyyy-MM-dd
+        required: true
+      - name: started_at
+        label: Início
+        type: date
+        options:
+          format: yyyy-MM-dd
+      - name: finished_at
+        label: Fim
+        type: date
+        options:
+          format: yyyy-MM-dd
+      - name: url
+        label: Link do curso
+        type: string
+        pattern:
+          regex: ^https?://
+          message: Use uma URL completa, começando com http:// ou https://
+      - name: certificate_url
+        label: Link do certificado
+        type: string
+        pattern:
+          regex: ^https?://
+          message: Use uma URL completa, começando com http:// ou https://
+      - name: notes
+        label: Notas
+        type: text
+      - *a2
+  - name: courses-en
+    label: Cursos (EN)
+    type: collection
+    path: src/content/courses/en
+    format: yaml-frontmatter
+    fields:
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: en
+        options:
+          values:
+            - en
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - name: provider
+        label: Instituição
+        type: string
+        required: true
+      - *a3
+      - name: progress
+        label: Progresso (%)
+        type: number
+        required: true
+        options:
+          min: 0
+          max: 100
+      - name: updated_at
+        label: Atualizado em
+        type: date
+        options:
+          format: yyyy-MM-dd
+        required: true
+      - name: started_at
+        label: Início
+        type: date
+        options:
+          format: yyyy-MM-dd
+      - name: finished_at
+        label: Fim
+        type: date
+        options:
+          format: yyyy-MM-dd
+      - name: url
+        label: Link do curso
+        type: string
+        pattern:
+          regex: ^https?://
+          message: Use uma URL completa, começando com http:// ou https://
+      - name: certificate_url
+        label: Link do certificado
+        type: string
+        pattern:
+          regex: ^https?://
+          message: Use uma URL completa, começando com http:// ou https://
+      - name: notes
+        label: Notas
+        type: text
+      - *a2
+  - name: projects-pt
+    label: Projetos (PT)
+    type: collection
+    path: src/content/projects/pt
+    format: yaml-frontmatter
+    fields:
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: pt
+        options:
+          values:
+            - pt
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - *a3
+      - name: role
+        label: Papel
+        type: string
+        required: true
+      - name: stack
+        label: Tecnologias
+        type: string
+        list: true
+        required: true
+      - name: summary
+        label: Resumo
+        type: text
+        required: true
+      - name: period
+        label: Período
+        type: string
+        required: true
+      - name: url
+        label: Link
+        type: string
+        pattern:
+          regex: ^https?://
+          message: Use uma URL completa, começando com http:// ou https://
+      - name: screenshot
+        label: Imagem (nome do arquivo em src/assets)
+        type: string
+      - name: outcome
+        label: Resultado
+        type: text
+      - *a1
+      - *a2
+  - name: projects-en
+    label: Projetos (EN)
+    type: collection
+    path: src/content/projects/en
+    format: yaml-frontmatter
+    fields:
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: en
+        options:
+          values:
+            - en
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - *a3
+      - name: role
+        label: Papel
+        type: string
+        required: true
+      - name: stack
+        label: Tecnologias
+        type: string
+        list: true
+        required: true
+      - name: summary
+        label: Resumo
+        type: text
+        required: true
+      - name: period
+        label: Período
+        type: string
+        required: true
+      - name: url
+        label: Link
+        type: string
+        pattern:
+          regex: ^https?://
+          message: Use uma URL completa, começando com http:// ou https://
+      - name: screenshot
+        label: Imagem (nome do arquivo em src/assets)
+        type: string
+      - name: outcome
+        label: Resultado
+        type: text
+      - *a1
+      - *a2
+  - name: experience-pt
+    label: Experiência (PT)
+    type: collection
+    path: src/content/experience/pt
+    format: yaml-frontmatter
+    fields:
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: pt
+        options:
+          values:
+            - pt
+      - name: org
+        label: Organização
+        type: string
+        required: true
+      - name: role
+        label: Cargo
+        type: string
+        required: true
+      - name: start
+        label: Início
+        type: date
+        options:
+          format: yyyy-MM-dd
+        required: true
+      - name: end
+        label: Fim
+        type: date
+        options:
+          format: yyyy-MM-dd
+      - name: summary
+        label: Resumo
+        type: text
+        required: true
+      - name: highlights
+        label: Destaques
+        type: string
+        list: true
+      - name: tools
+        label: Ferramentas
+        type: string
+        list: true
+      - *a1
+      - *a2
+  - name: experience-en
+    label: Experiência (EN)
+    type: collection
+    path: src/content/experience/en
+    format: yaml-frontmatter
+    fields:
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: en
+        options:
+          values:
+            - en
+      - name: org
+        label: Organização
+        type: string
+        required: true
+      - name: role
+        label: Cargo
+        type: string
+        required: true
+      - name: start
+        label: Início
+        type: date
+        options:
+          format: yyyy-MM-dd
+        required: true
+      - name: end
+        label: Fim
+        type: date
+        options:
+          format: yyyy-MM-dd
+      - name: summary
+        label: Resumo
+        type: text
+        required: true
+      - name: highlights
+        label: Destaques
+        type: string
+        list: true
+      - name: tools
+        label: Ferramentas
+        type: string
+        list: true
+      - *a1
+      - *a2
+  - name: activities-pt
+    label: Atividades (PT)
+    type: collection
+    path: src/content/activities/pt
+    format: yaml-frontmatter
+    fields:
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: pt
+        options:
+          values:
+            - pt
+      - name: org
+        label: Organização
+        type: string
+        required: true
+      - name: role
+        label: Papel
+        type: string
+        required: true
+      - name: start
+        label: Início
+        type: date
+        options:
+          format: yyyy-MM-dd
+        required: true
+      - name: end
+        label: Fim
+        type: date
+        options:
+          format: yyyy-MM-dd
+      - name: summary
+        label: Resumo
+        type: text
+        required: true
+      - name: highlights
+        label: Destaques
+        type: string
+        list: true
+      - *a1
+      - *a2
+  - name: activities-en
+    label: Atividades (EN)
+    type: collection
+    path: src/content/activities/en
+    format: yaml-frontmatter
+    fields:
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: en
+        options:
+          values:
+            - en
+      - name: org
+        label: Organização
+        type: string
+        required: true
+      - name: role
+        label: Papel
+        type: string
+        required: true
+      - name: start
+        label: Início
+        type: date
+        options:
+          format: yyyy-MM-dd
+        required: true
+      - name: end
+        label: Fim
+        type: date
+        options:
+          format: yyyy-MM-dd
+      - name: summary
+        label: Resumo
+        type: text
+        required: true
+      - name: highlights
+        label: Destaques
+        type: string
+        list: true
+      - *a1
+      - *a2
+  - name: about-pt
+    label: Sobre (PT)
+    type: file
+    path: src/content/about/pt.md
+    format: yaml-frontmatter
+    fields:
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: pt
+        options:
+          values:
+            - pt
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - name: cta_label
+        label: Texto do botão
+        type: string
+        required: true
+      - name: linkedin_url
+        label: LinkedIn
+        type: string
+        pattern:
+          regex: ^https?://
+          message: Use uma URL completa, começando com http:// ou https://
+        required: true
+      - name: photo
+        label: Foto (nome do arquivo em src/assets)
+        type: string
+      - name: photo_alt
+        label: Descrição da foto (texto alternativo)
+        type: string
+      - name: body
+        label: Texto
+        type: rich-text
+        options:
+          format: markdown
+  - name: about-en
+    label: Sobre (EN)
+    type: file
+    path: src/content/about/en.md
+    format: yaml-frontmatter
+    fields:
+      - name: lang
+        label: Idioma
+        type: select
+        required: true
+        default: en
+        options:
+          values:
+            - en
+      - name: title
+        label: Título
+        type: string
+        required: true
+      - name: cta_label
+        label: Texto do botão
+        type: string
+        required: true
+      - name: linkedin_url
+        label: LinkedIn
+        type: string
+        pattern:
+          regex: ^https?://
+          message: Use uma URL completa, começando com http:// ou https://
+        required: true
+      - name: photo
+        label: Foto (nome do arquivo em src/assets)
+        type: string
+      - name: photo_alt
+        label: Descrição da foto (texto alternativo)
+        type: string
+      - name: body
+        label: Texto
+        type: rich-text
+        options:
+          format: markdown

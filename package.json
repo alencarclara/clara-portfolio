@@ -21,6 +21,7 @@
     "@playwright/test": "^1.65.1",
     "@types/node": "^26.6.6",
     "gray-matter": "^4.0.3",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "yaml": "^2.9.1"
   }
 }
