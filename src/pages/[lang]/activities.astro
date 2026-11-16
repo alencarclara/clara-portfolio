@@ -1,0 +1,25 @@
+---
+import Base from "../../layouts/Base.astro";
+import EntryList from "../../components/EntryList.astro";
+import { getUi } from "../../lib/ui";
+import { LANGS, type Lang } from "../../lib/i18n";
+import { getPublishedByLang } from "../../lib/published";
+import { period } from "../../lib/format";
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+const lang = Astro.params.lang as Lang;
+const ui = await getUi(lang);
+const page = ui.pages.activities;
+const entries = (await getPublishedByLang("activities", lang)).sort((a, b) => b.data.start.localeCompare(a.data.start));
+const items = entries.map((e) => ({
+  ...e.data,
+  period: period(e.data.start, e.data.end, ui.months, ui.labels.present),
+}));
+---
+<Base title={page.title} current="activities" lang={lang}>
+  <h1>{page.title}</h1>
+  <p class="muted prose">{page.intro}</p>
+  <EntryList items={items} labels={ui.labels} />
+</Base>

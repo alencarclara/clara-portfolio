@@ -1,23 +1,29 @@
 ---
 import ThemeToggle from "./ThemeToggle.astro";
+import LangSwitch from "./LangSwitch.astro";
+import { localePath, otherLang, type Lang, type Page } from "../lib/i18n";
 import type { getUi } from "../lib/ui";
 type Ui = Awaited<ReturnType<typeof getUi>>;
-interface Props { ui: Ui; current: string }
-const { ui, current } = Astro.props;
+interface Props { ui: Ui; current: "home" | Page; lang: Lang; otherHref: string }
+const { ui, current, lang, otherHref } = Astro.props;
+const base = import.meta.env.BASE_URL;
 const links = [
-  ["/", ui.nav.home, "home"],
-  ["/activities", ui.nav.activities, "activities"],
-  ["/experience", ui.nav.experience, "experience"],
-  ["/courses", ui.nav.courses, "courses"],
-  ["/projects", ui.nav.projects, "projects"],
-  ["/journal", ui.nav.journal, "journal"],
+  [localePath(lang, undefined, base), ui.nav.home, "home"],
+  [localePath(lang, "activities", base), ui.nav.activities, "activities"],
+  [localePath(lang, "experience", base), ui.nav.experience, "experience"],
+  [localePath(lang, "courses", base), ui.nav.courses, "courses"],
+  [localePath(lang, "projects", base), ui.nav.projects, "projects"],
+  [localePath(lang, "journal", base), ui.nav.journal, "journal"],
 ] as const;
 ---
 <header class="site-header">
   <div class="window-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot dot-accent"></span></div>
   <div class="header-row">
-    <a class="brand" href="/">{ui.site.name}</a>
-    <ThemeToggle toLight={ui.theme.toLight} toDark={ui.theme.toDark} label={ui.theme.label} />
+    <a class="brand" href={localePath(lang, undefined, base)}>{ui.site.name}</a>
+    <div class="header-actions">
+      <LangSwitch href={otherHref} hreflang={otherLang(lang)} text={ui.langSwitch.text} label={ui.langSwitch.label} />
+      <ThemeToggle toLight={ui.theme.toLight} toDark={ui.theme.toDark} label={ui.theme.label} />
+    </div>
   </div>
   <nav aria-label={ui.nav.label}>
     <ul>

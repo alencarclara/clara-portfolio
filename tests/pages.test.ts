@@ -32,6 +32,9 @@ const shortDate = (lang: Lang, iso: string) =>
     ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}`
     : `${iso.slice(5, 7)}/${iso.slice(8, 10)}`;
 
+// O markdown do Astro troca aspas retas por tipográficas (smartypants); compara com aspas retas.
+const straight = (s: string) => s.replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
+
 // Remove sintaxe markdown simples para comparar o corpo com o texto renderizado.
 const plainMd = (s: string) =>
   norm(s.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/[*_`#>]/g, ""));
@@ -175,7 +178,7 @@ describe.each(LANGS)("paginas [%s]", (lang) => {
     it("mostra o corpo markdown do about do idioma e não o do outro", () => {
       const body = plainMd(about().body);
       expect(body.length).toBeGreaterThan(20);
-      const text = textOf(pageHtml(home));
+      const text = straight(textOf(pageHtml(home)));
       expect(text).toContain(body);
       const other = contentEntries().find(
         (e) =>

@@ -52,6 +52,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--muted); }
 .dot-accent { background: var(--accent); }
 .header-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.header-actions { display: flex; gap: 0.5rem; align-items: center; }
 .brand { color: var(--text); font-weight: 700; text-decoration: none; }
 .site-header nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; padding: 0; margin: 0.75rem 0 0; }
 .site-header nav a { color: var(--muted); text-decoration: none; }

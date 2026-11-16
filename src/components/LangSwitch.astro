@@ -1,0 +1,5 @@
+---
+interface Props { href: string; hreflang: string; text: string; label: string }
+const { href, hreflang, text, label } = Astro.props;
+---
+<a id="lang-switch" class="theme-toggle" href={href} hreflang={hreflang} lang={hreflang} aria-label={label}>{text}</a>

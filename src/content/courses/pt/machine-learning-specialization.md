@@ -1,4 +1,5 @@
 ---
+lang: pt
 title: Machine Learning Specialization
 provider: DeepLearning.AI e Stanford Online
 status: in_progress

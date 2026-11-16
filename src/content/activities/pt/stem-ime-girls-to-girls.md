@@ -1,4 +1,5 @@
 ---
+lang: pt
 org: STEM IME Girls to Girls
 role: Diretora de Gestão e Financeiro
 start: "2023-08-01"
