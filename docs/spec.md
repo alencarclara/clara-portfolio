@@ -128,6 +128,8 @@ O `.pages.yml` precisa de uma coleção para cada tipo do modelo de conteúdo:
 
 Fluxo diário: abrir o Pages CMS, criar entrada nova em Journal, preencher `did`, `learned` e `tags`, salvar. Se marcar `draft`, a entrada fica fora do site até desmarcar.
 
+Decisões da slice 5 (detalhes em `docs/slice-5.md`): `.pages.yml` tem uma coleção por tipo e idioma (`journal-pt`, `journal-en`, `courses-pt`, ... e `about-pt`/`about-en` como arquivo único), pasta por idioma funciona. `photo` e `screenshot` são texto (nome do arquivo em `src/assets`) até a mini-slice de fotos. `tests/pages-cms.test.ts` confere que os campos batem com os schemas. Entrada nova de Journal nasce em PT (nome `AAAA-MM-DD-título.md`); o par EN vem do `/journal-translate`. Ainda falta testar no app real do Pages CMS depois do merge.
+
 A conferir na implementação: nomes exatos dos tipos de campo e se o Pages CMS aceita duas pastas de idioma para o mesmo tipo. O agente de implementação deve ler a documentação atual do Pages CMS antes de escrever o `.pages.yml`, em vez de confiar em exemplos de memória.
 
 ## Testes e critérios de aceite
