@@ -59,7 +59,8 @@
     "empty": "No entries yet.",
     "prevMonth": "previous month",
     "nextMonth": "next month",
-    "backToCalendar": "Back to the calendar"
+    "backToCalendar": "Back to the calendar",
+    "rss": "RSS"
   },
   "home": {
     "whoami": "$ whoami",
