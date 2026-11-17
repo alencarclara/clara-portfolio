@@ -18,6 +18,10 @@ const linkedin = about.data.linkedin_url;
 const base = import.meta.env.BASE_URL;
 const other = otherLang(lang);
 const otherHref = localePath(other, path ?? (current === "home" ? undefined : current), base);
+const selfHref = localePath(lang, path ?? (current === "home" ? undefined : current), base);
+// Com `site` (build de deploy): URLs absolutas, canonical e x-default. Sem ele, só o alternate relativo.
+const site = Astro.site;
+const abs = (p: string) => (site ? new URL(p, site).href : p);
 ---
 <!doctype html>
 <html lang={htmlLang[lang]} data-theme="dark">
@@ -25,7 +29,10 @@ const otherHref = localePath(other, path ?? (current === "home" ? undefined : cu
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title === ui.site.name ? title : `${title} · ${ui.site.name}`}</title>
-    <link rel="alternate" hreflang={other} href={otherHref} />
+    {site && <link rel="canonical" href={abs(selfHref)} />}
+    {site && <link rel="alternate" hreflang={lang} href={abs(selfHref)} />}
+    <link rel="alternate" hreflang={other} href={abs(otherHref)} />
+    {site && <link rel="alternate" hreflang="x-default" href={abs(base.endsWith("/") ? base : `${base}/`)} />}
     <script is:inline>
       try {
         var t = localStorage.getItem("theme");
