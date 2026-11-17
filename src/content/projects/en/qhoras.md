@@ -1,12 +1,18 @@
 ---
 lang: en
 title: qhoras
-status: in_progress
-role: PLACEHOLDER
+status: completed
+role: Full stack developer
 stack:
-  - PLACEHOLDER
-summary: PLACEHOLDER, app de horário em grupo, com documentação própria; Clara ajusta antes de publicar.
-period: PLACEHOLDER
+  - Next.js
+  - React
+  - TypeScript
+  - Tailwind CSS
+  - shadcn/ui
+  - Supabase
+  - Docker
+summary: An app to find the time that works for everyone in a group.
+period: Oct–Nov 2026
 url: https://qhoras.onrender.com/
 draft: true
 ---
