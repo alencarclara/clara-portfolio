@@ -14,5 +14,5 @@ stack:
 summary: An app to find the time that works for everyone in a group.
 period: Oct–Nov 2026
 url: https://qhoras.onrender.com/
-draft: true
+draft: false
 ---
