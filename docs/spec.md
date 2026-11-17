@@ -132,6 +132,8 @@ Decisões da slice 5 (detalhes em `docs/slice-5.md`): `.pages.yml` tem uma cole�
 
 Decisões da slice 6 (detalhes em `docs/slice-6.md`): deploy no GitHub Pages por workflow (`.github/workflows/deploy.yml`, a cada push na `main`), em `https://alencarclara.github.io/clara-portfolio/`. `site` e `base` vêm das variáveis `SITE` e `BASE_PATH`, só no build de deploy; com `site` o `<head>` tem `canonical`, `alternate` absoluto (pt, en) e `x-default` na raiz. RSS fica para a slice 7. Ativar o Pages (Source: GitHub Actions) é configuração do repositório, feita por Clara.
 
+Decisões da slice 7 (detalhes em `docs/slice-7.md`): um feed RSS 2.0 por idioma em `/<lang>/journal/rss.xml`, gerado no build, com as mesmas entradas do Journal (sem `draft`, da mais nova para a mais antiga; entrada sem tradução leva o aviso na descrição). Links absolutos com `site`. Descoberta por `<link rel="alternate" type="application/rss+xml">` nas páginas do Journal e link "RSS" no calendário (chave `journal.rss` na interface).
+
 A conferir na implementação: nomes exatos dos tipos de campo e se o Pages CMS aceita duas pastas de idioma para o mesmo tipo. O agente de implementação deve ler a documentação atual do Pages CMS antes de escrever o `.pages.yml`, em vez de confiar em exemplos de memória.
 
 ## Testes e critérios de aceite

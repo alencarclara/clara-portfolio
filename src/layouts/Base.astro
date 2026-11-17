@@ -32,6 +32,7 @@ const abs = (p: string) => (site ? new URL(p, site).href : p);
     {site && <link rel="canonical" href={abs(selfHref)} />}
     {site && <link rel="alternate" hreflang={lang} href={abs(selfHref)} />}
     <link rel="alternate" hreflang={other} href={abs(otherHref)} />
+    {current === "journal" && <link rel="alternate" type="application/rss+xml" title={`${ui.pages.journal.title} · ${ui.site.name}`} href={`${base.endsWith("/") ? base : `${base}/`}${lang}/journal/rss.xml`} />}
     {site && <link rel="alternate" hreflang="x-default" href={abs(base.endsWith("/") ? base : `${base}/`)} />}
     <script is:inline>
       try {

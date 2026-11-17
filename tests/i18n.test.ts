@@ -70,7 +70,7 @@ describe("i18n > textos de interface", () => {
   it("journal: chave obrigatória no uiSchema, com os textos do Journal", () => {
     const keys = [
       "backToCalendar", "calendar", "did", "empty", "entriesMany", "entriesOne", "learned", "links",
-      "monthNames", "nextMonth", "prevMonth", "tabsLabel", "tags", "themes", "untranslated", "weekdays",
+      "monthNames", "nextMonth", "prevMonth", "rss", "tabsLabel", "tags", "themes", "untranslated", "weekdays",
     ];
     for (const l of LANGS) {
       const ui = uiOf(l);

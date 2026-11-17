@@ -1,5 +1,6 @@
 ---
 import Base from "../../../layouts/Base.astro";
+import RssLink from "../../../components/RssLink.astro";
 import JournalTabs from "../../../components/JournalTabs.astro";
 import Calendar from "../../../components/Calendar.astro";
 import { getUi } from "../../../lib/ui";
@@ -26,4 +27,5 @@ for (const e of entries) counts[e.data.date] = (counts[e.data.date] ?? 0) + 1;
   {latest
     ? <Calendar ui={ui} lang={lang} month={latest} counts={counts} prev={months[months.length - 2]} />
     : <p>{ui.journal.empty}</p>}
+  <RssLink ui={ui} lang={lang} />
 </Base>

@@ -170,6 +170,7 @@ export const uiSchema = z
         prevMonth: text,
         nextMonth: text,
         backToCalendar: text,
+        rss: text,
       })
       .strict(),
     home: z.object({ whoami: text, pages: text, contact: text }).strict(),

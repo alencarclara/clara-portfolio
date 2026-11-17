@@ -47,6 +47,16 @@ describe("build de deploy (SITE e BASE_PATH)", () => {
     }
   });
 
+  it("feeds RSS: links e guids absolutos com o base, atom:link self correto", () => {
+    for (const lang of ["pt", "en"]) {
+      const xml = fs.readFileSync(path.join(out, lang, "journal", "rss.xml"), "utf8");
+      const urls = [...xml.matchAll(/<(?:link|guid)>([^<]+)</g)].map((m) => m[1]);
+      expect(urls.length).toBeGreaterThan(2);
+      for (const u of urls) expect(u.startsWith(`${SITE}${BASE}/${lang}/journal`), `${lang}: ${u}`).toBe(true);
+      expect(xml).toContain(`href="${SITE}${BASE}/${lang}/journal/rss.xml" rel="self"`);
+    }
+  });
+
   it("a raiz tem os links de idioma com o base", () => {
     const html = fs.readFileSync(path.join(out, "index.html"), "utf8");
     expect(html).toContain(`href="${BASE}/pt/"`);
